@@ -1,0 +1,22 @@
+name: Verify initial snapshot
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Verify pinned research snapshot
+        shell: bash
+        run: bash tools/verify-snapshot.sh
