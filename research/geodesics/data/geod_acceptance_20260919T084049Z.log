@@ -1,0 +1,285 @@
+=== GEO-D FINAL ACCEPTANCE ===
+timestamp_utc=20260919T084049Z
+
+=== REPOSITORY IDENTITY ===
+branch=research/geodesics
+HEAD=e9ca14b13bc7a512bd901515660a03883bcc6d52
+
+=== EXPECTED WORKTREE CONTENT ===
+?? research/geodesics/geod_proj_public_probe.d
+?? research/geodesics/proj_geodesic_probe.cpp
+?? research/geodesics/validate_geod_proj.py
+worktree_scope=PASS
+
+=== HARNESS HASHES ===
+research/geodesics/geod_proj_public_probe.d: OK
+research/geodesics/proj_geodesic_probe.cpp: OK
+research/geodesics/validate_geod_proj.py: OK
+
+=== TOOLCHAIN ===
+DMD64 D Compiler v2.111.0
+Copyright (C) 1999-2025 by The D Language Foundation, All Rights Reserved written by Walter Bright
+
+LDC - the LLVM D compiler (1.41.0):
+  based on DMD v2.111.0 and LLVM 19.1.7
+  built with LDC - the LLVM D compiler (1.41.0)
+  Default target: x86_64-pc-linux-gnu
+  Host CPU: skylake
+  http://dlang.org - http://wiki.dlang.org/LDC
+
+
+  Registered Targets:
+    aarch64     - AArch64 (little endian)
+    aarch64_32  - AArch64 (little endian ILP32)
+    aarch64_be  - AArch64 (big endian)
+    amdgcn      - AMD GCN GPUs
+    arm         - ARM
+    arm64       - ARM64 (little endian)
+    arm64_32    - ARM64 (little endian ILP32)
+    armeb       - ARM (big endian)
+    avr         - Atmel AVR Microcontroller
+    bpf         - BPF (host endian)
+    bpfeb       - BPF (big endian)
+    bpfel       - BPF (little endian)
+    hexagon     - Hexagon
+    lanai       - Lanai
+    loongarch32 - 32-bit LoongArch
+    loongarch64 - 64-bit LoongArch
+    m68k        - Motorola 68000 family
+    mips        - MIPS (32-bit big endian)
+    mips64      - MIPS (64-bit big endian)
+    mips64el    - MIPS (64-bit little endian)
+    mipsel      - MIPS (32-bit little endian)
+    msp430      - MSP430 [experimental]
+    nvptx       - NVIDIA PTX 32-bit
+    nvptx64     - NVIDIA PTX 64-bit
+    ppc32       - PowerPC 32
+    ppc32le     - PowerPC 32 LE
+    ppc64       - PowerPC 64
+    ppc64le     - PowerPC 64 LE
+    r600        - AMD GPUs HD2XXX-HD6XXX
+    riscv32     - 32-bit RISC-V
+    riscv64     - 64-bit RISC-V
+    sparc       - Sparc
+    sparcel     - Sparc LE
+    sparcv9     - Sparc V9
+    systemz     - SystemZ
+    thumb       - Thumb
+    thumbeb     - Thumb (big endian)
+    ve          - VE
+    wasm32      - WebAssembly 32-bit
+    wasm64      - WebAssembly 64-bit
+    x86         - 32-bit X86: Pentium-Pro and above
+    x86-64      - 64-bit X86: EM64T and AMD64
+    xcore       - XCore
+    xtensa      - Xtensa 32
+
+Python 3.14.4
+
+c++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0
+
+PROJ pkg-config version: 9.7.1
+PROJ cflags: -I/usr/include/x86_64-linux-gnu -I/usr/include/webp -isystem /usr/include/mit-krb5 -isystem /usr/include/mit-krb5 -I/usr/include/p11-kit-1
+PROJ libs: -lproj
+
+=== PROJ PROVENANCE ===
+geodesic_header=/usr/include/geodesic.h
+a964a747bc4f388fb3a93cc9bc379aebe4cdd78b3ee909c071be711b82db4b10  /usr/include/geodesic.h
+proj_library=/usr/lib/x86_64-linux-gnu/libproj.so.25.9.7.1
+857bf68c4494c0cec4dae9c9fa87906350e7d2da7e082547b3ca855006797163  /usr/lib/x86_64-linux-gnu/libproj.so.25.9.7.1
+
+=== REAL PLATFORM ===
+-- DMD --
+real.mant_dig=64
+real.sizeof=16
+-- LDC --
+real.mant_dig=64
+real.sizeof=16
+
+=== PYTHON SYNTAX ===
+
+=== NO PRODUCTION PROJ DEPENDENCY ===
+production_dependency_check=PASS
+
+=== DMD FULL GEO-D ===
+PROJ: 9.7.1
+compiler: dmd
+seed: 0x47454F44
+generated cases per profile/operation: 2000
+gate mode: FULL
+candidate input protocol: exact IEEE-754 binary64 bit patterns; angles are radians
+real interop policy: binary64 bits -> double -> exact widening to D real; wide-real precision belongs to GEO-C
+real max-f profile: nextDown(binary64(0.01)) = 0.0099999999999999985; this is the largest binary64 value inside the real f <= 0.01 domain
+real transport audit unique binary64 inputs: 128063
+real transport audit mismatches: 0
+real transport audit: PASS
+known semantic divergence: coincident/non-unique inverse azimuths are not normative and are excluded from azimuth gates
+
+=== scalar: float ===
+sphere: D=2006 I=2006 D.end=1.183e-07 I.dist=1.568e-07
+wgs84: D=2006 I=2006 D.end=1.167e-07 I.dist=1.567e-07
+grs80: D=2006 I=2006 D.end=1.165e-07 I.dist=1.567e-07
+international-1924: D=2006 I=2006 D.end=1.175e-07 I.dist=1.565e-07
+airy-1830: D=2006 I=2006 D.end=1.187e-07 I.dist=1.561e-07
+mid-f: D=2006 I=2006 D.end=1.175e-07 I.dist=1.422e-07
+max-f: D=2006 I=2006 D.end=1.163e-07 I.dist=1.427e-07
+unit-scale: D=2006 I=2006 D.end=1.162e-07 I.dist=1.192e-07
+
+float total Direct:  16048
+float total Inverse: 16048
+float max Direct endpoint: 1.1868755019338276e-07
+float max Direct tangent: 2.3509569043847252e-07
+float max Inverse distance: 1.5680921814951001e-07
+float max Inverse ordinary_initial: 1.1918681423016197e-07
+float max Inverse ordinary_final: 1.1915453734436218e-07
+float max Inverse short_initial: 1.1297883976796231e-12
+float max Inverse short_final: 1.1091752449609755e-12
+float max Inverse antipodal_initial: 4.8476324789125197e-13
+float max Inverse antipodal_final: 4.8773898522760715e-13
+float: PASS
+
+=== scalar: double ===
+sphere: D=2006 I=2006 D.end=2.509e-14 I.dist=1.169e-15
+wgs84: D=2006 I=2006 D.end=1.111e-15 I.dist=8.761e-16
+grs80: D=2006 I=2006 D.end=1.120e-15 I.dist=8.761e-16
+international-1924: D=2006 I=2006 D.end=1.174e-15 I.dist=8.761e-16
+airy-1830: D=2006 I=2006 D.end=1.223e-15 I.dist=5.841e-16
+mid-f: D=2006 I=2006 D.end=1.079e-15 I.dist=1.064e-15
+max-f: D=2006 I=2006 D.end=1.097e-15 I.dist=5.322e-16
+unit-scale: D=2006 I=2006 D.end=1.115e-15 I.dist=8.882e-16
+
+double total Direct:  16048
+double total Inverse: 16048
+double max Direct endpoint: 2.5091245457854084e-14
+double max Direct tangent: 2.2578207193365125e-14
+double max Inverse distance: 1.1694522989991882e-15
+double max Inverse ordinary_initial: 9.6382483219954845e-14
+double max Inverse ordinary_final: 9.6806215584434934e-14
+double max Inverse short_initial: 4.0614428773859857e-16
+double max Inverse short_final: 4.0614428771824655e-16
+double max Inverse antipodal_initial: 3.402026833573463e-16
+double max Inverse antipodal_final: 3.4020252788665561e-16
+double: PASS
+
+=== scalar: real ===
+sphere: D=2006 I=2006 D.end=1.075e-15 I.dist=5.847e-16
+wgs84: D=2006 I=2006 D.end=1.423e-15 I.dist=1.168e-15
+grs80: D=2006 I=2006 D.end=1.231e-15 I.dist=1.168e-15
+international-1924: D=2006 I=2006 D.end=1.296e-15 I.dist=1.168e-15
+airy-1830: D=2006 I=2006 D.end=1.343e-15 I.dist=1.168e-15
+mid-f: D=2006 I=2006 D.end=1.454e-15 I.dist=1.064e-15
+max-f: D=2006 I=2006 D.end=1.210e-15 I.dist=1.064e-15
+unit-scale: D=2006 I=2006 D.end=1.024e-15 I.dist=8.882e-16
+
+real total Direct:  16048
+real total Inverse: 16048
+real max Direct endpoint: 1.4541908674370038e-15
+real max Direct tangent: 1.3499492811316325e-15
+real max Inverse distance: 1.1682487706193282e-15
+real max Inverse ordinary_initial: 1.0294625405395418e-13
+real max Inverse ordinary_final: 1.0342102253528597e-13
+real max Inverse short_initial: 4.0615679691539418e-16
+real max Inverse short_final: 4.0615679690828639e-16
+real max Inverse antipodal_initial: 3.366939560716481e-16
+real max Inverse antipodal_final: 3.3669330631116305e-16
+real: PASS
+
+GEO-D PROJ public interoperability validation: PASS
+
+=== LDC FULL GEO-D ===
+PROJ: 9.7.1
+compiler: ldc2
+seed: 0x47454F44
+generated cases per profile/operation: 2000
+gate mode: FULL
+candidate input protocol: exact IEEE-754 binary64 bit patterns; angles are radians
+real interop policy: binary64 bits -> double -> exact widening to D real; wide-real precision belongs to GEO-C
+real max-f profile: nextDown(binary64(0.01)) = 0.0099999999999999985; this is the largest binary64 value inside the real f <= 0.01 domain
+real transport audit unique binary64 inputs: 128063
+real transport audit mismatches: 0
+real transport audit: PASS
+known semantic divergence: coincident/non-unique inverse azimuths are not normative and are excluded from azimuth gates
+
+=== scalar: float ===
+sphere: D=2006 I=2006 D.end=1.183e-07 I.dist=1.568e-07
+wgs84: D=2006 I=2006 D.end=1.167e-07 I.dist=1.567e-07
+grs80: D=2006 I=2006 D.end=1.165e-07 I.dist=1.567e-07
+international-1924: D=2006 I=2006 D.end=1.175e-07 I.dist=1.565e-07
+airy-1830: D=2006 I=2006 D.end=1.187e-07 I.dist=1.561e-07
+mid-f: D=2006 I=2006 D.end=1.175e-07 I.dist=1.422e-07
+max-f: D=2006 I=2006 D.end=1.163e-07 I.dist=1.427e-07
+unit-scale: D=2006 I=2006 D.end=1.162e-07 I.dist=1.192e-07
+
+float total Direct:  16048
+float total Inverse: 16048
+float max Direct endpoint: 1.1868755019338276e-07
+float max Direct tangent: 2.3509569043847252e-07
+float max Inverse distance: 1.5680921814951001e-07
+float max Inverse ordinary_initial: 1.1918681423016197e-07
+float max Inverse ordinary_final: 1.1915453734436218e-07
+float max Inverse short_initial: 1.1297883976796231e-12
+float max Inverse short_final: 1.1091752449609755e-12
+float max Inverse antipodal_initial: 4.8476324789125197e-13
+float max Inverse antipodal_final: 4.8773898522760715e-13
+float: PASS
+
+=== scalar: double ===
+sphere: D=2006 I=2006 D.end=2.509e-14 I.dist=8.771e-16
+wgs84: D=2006 I=2006 D.end=1.111e-15 I.dist=8.761e-16
+grs80: D=2006 I=2006 D.end=1.104e-15 I.dist=8.761e-16
+international-1924: D=2006 I=2006 D.end=1.174e-15 I.dist=1.168e-15
+airy-1830: D=2006 I=2006 D.end=1.228e-15 I.dist=8.762e-16
+mid-f: D=2006 I=2006 D.end=1.070e-15 I.dist=1.064e-15
+max-f: D=2006 I=2006 D.end=1.097e-15 I.dist=5.322e-16
+unit-scale: D=2006 I=2006 D.end=1.115e-15 I.dist=8.882e-16
+
+double total Direct:  16048
+double total Inverse: 16048
+double max Direct endpoint: 2.5091245457854084e-14
+double max Direct tangent: 2.2578207193365125e-14
+double max Inverse distance: 1.1680977383194356e-15
+double max Inverse ordinary_initial: 9.6382483219954845e-14
+double max Inverse ordinary_final: 9.6806215584434934e-14
+double max Inverse short_initial: 4.0614428773859857e-16
+double max Inverse short_final: 4.0614428771824655e-16
+double max Inverse antipodal_initial: 3.402026833573463e-16
+double max Inverse antipodal_final: 3.4020252788665561e-16
+double: PASS
+
+=== scalar: real ===
+sphere: D=2006 I=2006 D.end=1.075e-15 I.dist=5.847e-16
+wgs84: D=2006 I=2006 D.end=1.423e-15 I.dist=1.168e-15
+grs80: D=2006 I=2006 D.end=1.231e-15 I.dist=1.168e-15
+international-1924: D=2006 I=2006 D.end=1.296e-15 I.dist=1.168e-15
+airy-1830: D=2006 I=2006 D.end=1.343e-15 I.dist=1.168e-15
+mid-f: D=2006 I=2006 D.end=1.454e-15 I.dist=1.064e-15
+max-f: D=2006 I=2006 D.end=1.210e-15 I.dist=1.064e-15
+unit-scale: D=2006 I=2006 D.end=1.024e-15 I.dist=8.882e-16
+
+real total Direct:  16048
+real total Inverse: 16048
+real max Direct endpoint: 1.4541908674370038e-15
+real max Direct tangent: 1.3499492811316325e-15
+real max Inverse distance: 1.1682487706193282e-15
+real max Inverse ordinary_initial: 1.0294625405395418e-13
+real max Inverse ordinary_final: 1.0342102253528597e-13
+real max Inverse short_initial: 4.0615679691539418e-16
+real max Inverse short_final: 4.0615679690828639e-16
+real max Inverse antipodal_initial: 3.366939560716481e-16
+real max Inverse antipodal_final: 3.3669330631116305e-16
+real: PASS
+
+GEO-D PROJ public interoperability validation: PASS
+
+=== FINAL DIFF CHECK ===
+
+=== FINAL STATUS ===
+?? research/geodesics/geod_proj_public_probe.d
+?? research/geodesics/proj_geodesic_probe.cpp
+?? research/geodesics/validate_geod_proj.py
+
+=== ACCEPTANCE LOG ===
+log=/tmp/geodesy-geod-acceptance-20260919T084049Z.log
+37d6ec746e068e0058693a16602e9813ffc15761e3a7bb37f884b6baa74f00d8  /tmp/geodesy-geod-acceptance-20260919T084049Z.log
+
+GEO-D FINAL ACCEPTANCE EXECUTION: PASS
