@@ -1,0 +1,8 @@
+name "geodesy-d-benchmarks"
+description "Performance benchmarks for geodesy-d."
+authors "Alexander Leisser"
+license "MIT"
+targetType "executable"
+sourcePaths "source"
+
+dependency "geodesy-d" path=".."

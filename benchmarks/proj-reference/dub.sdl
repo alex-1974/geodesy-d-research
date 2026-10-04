@@ -1,0 +1,10 @@
+name "geodesy-d-proj-reference"
+description "In-process PROJ reference validation and benchmarks for geodesy-d."
+authors "Alexander Leisser"
+license "MIT"
+targetType "executable"
+sourcePaths "source"
+
+dependency "geodesy-d" path="../.."
+
+libs "proj"
