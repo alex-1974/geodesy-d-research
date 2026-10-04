@@ -13,7 +13,7 @@ expected=0
 failures=0
 
 while IFS=$'\t' read -r path mode bytes blob; do
-    [[ "$path" == "# path" ]] && continue
+    [[ "$path" == \#* ]] && continue
     [[ -n "$path" ]] || continue
 
     expected=$((expected + 1))
