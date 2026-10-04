@@ -1,0 +1,48 @@
+=== GEO-F API/RUNTIME ACCEPTANCE ===
+timestamp_utc=20260919T105217Z
+branch=research/geodesics
+HEAD=f920fb40eb75c0175b0e9b3e4001c1ce4fa00766
+
+=== TOOLCHAIN ===
+DMD64 D Compiler v2.111.0
+LDC - the LLVM D compiler (1.41.0):
+  based on DMD v2.111.0 and LLVM 19.1.7
+  built with LDC - the LLVM D compiler (1.41.0)
+
+=== HARNESS HASHES ===
+63ff836af7828dd8d65156d464d1dd08055587bccf32b8b2f08058ed3780715e  validation/api/public_api_contract.d
+270c3c199138d8003e4183ed5ec3289bc57a19e7aeb5ece8535fe4dfe3b835eb  validation/geodesic_api_runtime_validation.d
+
+=== PUBLIC API CONTRACT / DMD ===
+Public API positive contract (dmd)...
+PASS reject: GeocentricTranslation mutation
+PASS reject: package-internal finite helper
+PASS reject: private unchecked Angle factory
+PASS reject: package-internal Angle helper
+PASS reject: Helmert7 without explicit convention
+PASS: public API contract
+
+=== PUBLIC API CONTRACT / LDC ===
+Public API positive contract (ldc2)...
+PASS reject: GeocentricTranslation mutation
+PASS reject: package-internal finite helper
+PASS reject: private unchecked Angle factory
+PASS reject: package-internal Angle helper
+PASS reject: Helmert7 without explicit convention
+PASS: public API contract
+
+=== GEO-F RUNTIME / DMD ===
+GEO-F geodesic API/runtime validation
+float: PASS (checked API pure/nothrow/@safe/@nogc, invalid/result-reset semantics, GeodesyValueException, 100000 direct + 100000 inverse deterministic repetitions)
+double: PASS (checked API pure/nothrow/@safe/@nogc, invalid/result-reset semantics, GeodesyValueException, 100000 direct + 100000 inverse deterministic repetitions)
+real: PASS (checked API pure/nothrow/@safe/@nogc, invalid/result-reset semantics, GeodesyValueException, 100000 direct + 100000 inverse deterministic repetitions)
+RESULT: GEO-F PASS
+
+=== GEO-F RUNTIME / LDC ===
+GEO-F geodesic API/runtime validation
+float: PASS (checked API pure/nothrow/@safe/@nogc, invalid/result-reset semantics, GeodesyValueException, 100000 direct + 100000 inverse deterministic repetitions)
+double: PASS (checked API pure/nothrow/@safe/@nogc, invalid/result-reset semantics, GeodesyValueException, 100000 direct + 100000 inverse deterministic repetitions)
+real: PASS (checked API pure/nothrow/@safe/@nogc, invalid/result-reset semantics, GeodesyValueException, 100000 direct + 100000 inverse deterministic repetitions)
+RESULT: GEO-F PASS
+
+GEO-F API/RUNTIME ACCEPTANCE: PASS

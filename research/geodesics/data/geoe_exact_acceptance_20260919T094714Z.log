@@ -1,0 +1,84 @@
+=== GEO-E IDENTICAL-CORPUS EXACT-ORACLE ACCEPTANCE ===
+timestamp_utc=20260919T094714Z
+branch=research/geodesics
+HEAD=cf60a80b5ee87df0a68ad3a78455f554e20e0ce2
+
+=== TOOLCHAIN ===
+DMD64 D Compiler v2.111.0
+LDC - the LLVM D compiler (1.41.0):
+  based on DMD v2.111.0 and LLVM 19.1.7
+  built with LDC - the LLVM D compiler (1.41.0)
+Python 3.14.4
+/usr/bin/GeodSolve: GeographicLib version 2.7
+
+=== EXACT HARNESS HASHES ===
+a2cb861a2aea890e6161ca46b2b82fe33be805dd355f1bd62e31fc1f46132482  research/geodesics/geoe_inverse_probe.d
+1ce92be5435e2b78aea5632738b91f0f44db7a777060c18dac6cf76d0f009377  research/geodesics/geoe_exact_probe.cpp
+ecfe9c75a6c589645487054ed6fa7c883dcca29a49cef0b5c921af69a5fbdd4b  research/geodesics/validate_geoe_adversarial.py
+8488084d914680ed0d4fc126eb331f5e812ac8f31c2e733056adbb0fffd6f541  research/geodesics/validate_geoe_exact_adversarial.py
+
+=== DMD IDENTICAL-CORPUS EXACT ORACLE ===
+oracle: GeographicLib::GeodesicExact
+compiler: dmd
+seed: 0x47454F45
+cases per adversarial class: 2000
+cases per scalar/profile: 16007
+oracle corpus: identical GEO-E adversarial cases
+dmd  float  sphere      cases=16007 dist=2.339e-15 closure=1.951e-15 final=7.094e-11 final_n=14005
+dmd  float  near-sphere cases=16007 dist=2.920e-15 closure=2.473e-15 final=6.267e-11 final_n=14005
+dmd  float  wgs84       cases=16007 dist=2.336e-15 closure=2.635e-15 final=1.665e-10 final_n=14005
+dmd  float  mid-f       cases=16007 dist=2.661e-15 closure=2.766e-15 final=1.150e-10 final_n=14005
+dmd  float  max-f       cases=16007 dist=3.148e-15 closure=2.681e-15 final=1.197e-10 final_n=14005
+dmd  float  unit-scale  cases=16007 dist=2.297e-15 closure=2.635e-15 final=1.665e-10 final_n=14005
+dmd  double sphere      cases=16007 dist=1.754e-15 closure=1.865e-15 final=6.141e-11 final_n=14005
+dmd  double near-sphere cases=16007 dist=1.752e-15 closure=2.693e-15 final=6.856e-11 final_n=14005
+dmd  double wgs84       cases=16007 dist=2.920e-15 closure=2.617e-15 final=1.186e-10 final_n=14005
+dmd  double mid-f       cases=16007 dist=2.661e-15 closure=3.032e-15 final=1.401e-10 final_n=14005
+dmd  double max-f       cases=16007 dist=2.661e-15 closure=2.633e-15 final=9.075e-11 final_n=14005
+dmd  double unit-scale  cases=16007 dist=2.665e-15 closure=2.634e-15 final=1.186e-10 final_n=14005
+dmd  real   sphere      cases=16007 dist=1.462e-15 closure=1.781e-15 final=6.142e-11 final_n=14005
+dmd  real   near-sphere cases=16007 dist=1.752e-15 closure=1.980e-15 final=6.856e-11 final_n=14005
+dmd  real   wgs84       cases=16007 dist=2.920e-15 closure=2.887e-15 final=1.186e-10 final_n=14005
+dmd  real   mid-f       cases=16007 dist=2.661e-15 closure=2.125e-15 final=1.401e-10 final_n=14005
+dmd  real   max-f       cases=16007 dist=2.129e-15 closure=2.595e-15 final=9.075e-11 final_n=14005
+dmd  real   unit-scale  cases=16007 dist=2.350e-15 closure=2.529e-15 final=1.186e-10 final_n=14005
+
+total exact-oracle comparisons: 288126
+max normalized distance error: 3.1478910906506436e-15
+max exact-direct closure angle: 3.0324792329808581e-15 rad
+max well-conditioned final azimuth error: 1.6651835466063858e-10 rad
+GEO-E identical-corpus exact-oracle validation: PASS
+
+=== LDC IDENTICAL-CORPUS EXACT ORACLE ===
+oracle: GeographicLib::GeodesicExact
+compiler: ldc2
+seed: 0x47454F45
+cases per adversarial class: 2000
+cases per scalar/profile: 16007
+oracle corpus: identical GEO-E adversarial cases
+ldc2 float  sphere      cases=16007 dist=2.339e-15 closure=1.951e-15 final=7.078e-11 final_n=14005
+ldc2 float  near-sphere cases=16007 dist=2.920e-15 closure=2.478e-15 final=6.267e-11 final_n=14005
+ldc2 float  wgs84       cases=16007 dist=2.336e-15 closure=2.635e-15 final=1.665e-10 final_n=14005
+ldc2 float  mid-f       cases=16007 dist=2.661e-15 closure=2.766e-15 final=1.150e-10 final_n=14005
+ldc2 float  max-f       cases=16007 dist=3.148e-15 closure=2.681e-15 final=1.197e-10 final_n=14005
+ldc2 float  unit-scale  cases=16007 dist=2.297e-15 closure=2.635e-15 final=1.665e-10 final_n=14005
+ldc2 double sphere      cases=16007 dist=1.754e-15 closure=2.607e-15 final=6.141e-11 final_n=14005
+ldc2 double near-sphere cases=16007 dist=2.044e-15 closure=2.693e-15 final=6.856e-11 final_n=14005
+ldc2 double wgs84       cases=16007 dist=2.920e-15 closure=2.505e-15 final=1.186e-10 final_n=14005
+ldc2 double mid-f       cases=16007 dist=2.661e-15 closure=3.032e-15 final=1.401e-10 final_n=14005
+ldc2 double max-f       cases=16007 dist=2.661e-15 closure=2.633e-15 final=9.075e-11 final_n=14005
+ldc2 double unit-scale  cases=16007 dist=2.665e-15 closure=2.634e-15 final=1.186e-10 final_n=14005
+ldc2 real   sphere      cases=16007 dist=1.462e-15 closure=1.781e-15 final=6.142e-11 final_n=14005
+ldc2 real   near-sphere cases=16007 dist=1.752e-15 closure=1.980e-15 final=6.856e-11 final_n=14005
+ldc2 real   wgs84       cases=16007 dist=2.920e-15 closure=2.887e-15 final=1.186e-10 final_n=14005
+ldc2 real   mid-f       cases=16007 dist=2.661e-15 closure=2.125e-15 final=1.401e-10 final_n=14005
+ldc2 real   max-f       cases=16007 dist=2.129e-15 closure=2.595e-15 final=9.075e-11 final_n=14005
+ldc2 real   unit-scale  cases=16007 dist=2.350e-15 closure=2.529e-15 final=1.186e-10 final_n=14005
+
+total exact-oracle comparisons: 288126
+max normalized distance error: 3.1478910906506436e-15
+max exact-direct closure angle: 3.0324792329808581e-15 rad
+max well-conditioned final azimuth error: 1.6651835466063858e-10 rad
+GEO-E identical-corpus exact-oracle validation: PASS
+
+GEO-E IDENTICAL-CORPUS EXACT-ORACLE ACCEPTANCE: PASS

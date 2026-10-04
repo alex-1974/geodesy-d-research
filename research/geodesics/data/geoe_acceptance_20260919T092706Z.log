@@ -1,0 +1,344 @@
+=== GEO-E FINAL ACCEPTANCE ===
+timestamp_utc=20260919T092706Z
+
+=== REPOSITORY IDENTITY ===
+branch=research/geodesics
+HEAD=cf60a80b5ee87df0a68ad3a78455f554e20e0ce2
+
+=== EXPECTED WORKTREE ===
+ M source/geodesy/internal/geodesic_inverse_dispatch.d
+ M source/geodesy/internal/geodesic_inverse_solver.d
+ M source/geodesy/internal/geodesic_inverse_start.d
+?? research/geodesics/geoe_inverse_probe.d
+?? research/geodesics/search_geoe_bracket.py
+?? research/geodesics/validate_geoe_adversarial.py
+worktree_scope=PASS
+
+=== HARNESS HASHES ===
+a2cb861a2aea890e6161ca46b2b82fe33be805dd355f1bd62e31fc1f46132482  research/geodesics/geoe_inverse_probe.d
+ecfe9c75a6c589645487054ed6fa7c883dcca29a49cef0b5c921af69a5fbdd4b  research/geodesics/validate_geoe_adversarial.py
+351cdb23ce20ab247f36e9a7cee22ea3560e83fc5f771e8b77c3b92442709fec  research/geodesics/search_geoe_bracket.py
+
+=== INSTRUMENTED SOURCE HASHES ===
+fb22499a77bdc73350d7cb45f39213ba71efa6004122e1d8291a64c9a871fae1  source/geodesy/internal/geodesic_inverse_start.d
+097d7895f853a76894a5112a17b6c07449b816bc4c0ad61354023c3fc08f1615  source/geodesy/internal/geodesic_inverse_solver.d
+cb7185e7c5310ded31542f1d846773d17f3decb46d41fe49f3f3a0fd772fb473  source/geodesy/internal/geodesic_inverse_dispatch.d
+
+=== TOOLCHAIN ===
+DMD64 D Compiler v2.111.0
+Copyright (C) 1999-2025 by The D Language Foundation, All Rights Reserved written by Walter Bright
+
+LDC - the LLVM D compiler (1.41.0):
+  based on DMD v2.111.0 and LLVM 19.1.7
+  built with LDC - the LLVM D compiler (1.41.0)
+  Default target: x86_64-pc-linux-gnu
+  Host CPU: skylake
+  http://dlang.org - http://wiki.dlang.org/LDC
+
+
+  Registered Targets:
+    aarch64     - AArch64 (little endian)
+    aarch64_32  - AArch64 (little endian ILP32)
+    aarch64_be  - AArch64 (big endian)
+    amdgcn      - AMD GCN GPUs
+    arm         - ARM
+    arm64       - ARM64 (little endian)
+    arm64_32    - ARM64 (little endian ILP32)
+    armeb       - ARM (big endian)
+    avr         - Atmel AVR Microcontroller
+    bpf         - BPF (host endian)
+    bpfeb       - BPF (big endian)
+    bpfel       - BPF (little endian)
+    hexagon     - Hexagon
+    lanai       - Lanai
+    loongarch32 - 32-bit LoongArch
+    loongarch64 - 64-bit LoongArch
+    m68k        - Motorola 68000 family
+    mips        - MIPS (32-bit big endian)
+    mips64      - MIPS (64-bit big endian)
+    mips64el    - MIPS (64-bit little endian)
+    mipsel      - MIPS (32-bit little endian)
+    msp430      - MSP430 [experimental]
+    nvptx       - NVIDIA PTX 32-bit
+    nvptx64     - NVIDIA PTX 64-bit
+    ppc32       - PowerPC 32
+    ppc32le     - PowerPC 32 LE
+    ppc64       - PowerPC 64
+    ppc64le     - PowerPC 64 LE
+    r600        - AMD GPUs HD2XXX-HD6XXX
+    riscv32     - 32-bit RISC-V
+    riscv64     - 64-bit RISC-V
+    sparc       - Sparc
+    sparcel     - Sparc LE
+    sparcv9     - Sparc V9
+    systemz     - SystemZ
+    thumb       - Thumb
+    thumbeb     - Thumb (big endian)
+    ve          - VE
+    wasm32      - WebAssembly 32-bit
+    wasm64      - WebAssembly 64-bit
+    x86         - 32-bit X86: Pentium-Pro and above
+    x86-64      - 64-bit X86: EM64T and AMD64
+    xcore       - XCore
+    xtensa      - Xtensa 32
+
+Python 3.14.4
+
+/usr/bin/GeodSolve: GeographicLib version 2.7
+
+=== ITERATION BOUNDS IN PRODUCTION SOURCE ===
+117-        "unsupported geodesic series order");
+118-
+119:    enum uint maxNewtonIterations = 20;
+120:    enum uint maxIterations =
+121:        maxNewtonIterations
+122-        + W.mant_dig
+123-        + 10;
+124-
+125-    const W zero =
+126-        cast(W) 0;
+--
+217-            zero;
+218-
+219:        if (iteration < maxNewtonIterations)
+220-        {
+221-            current =
+222-                geodesicLambda12!(
+223-                    W,
+224-                    order,
+--
+284-            tripBracket
+285-            || residualAccepted
+286:            || iteration == maxIterations)
+287-        {
+288-            converged =
+289-                tripBracket
+290-                || residualAccepted;
+291-
+--
+300-            residual > zero
+301-            && (
+302:                iteration > maxNewtonIterations
+303-                || cosAlpha1 / sinAlpha1
+304-                    > cosAlpha1Upper / sinAlpha1Upper
+305-            ))
+306-        {
+307-            sinAlpha1Upper =
+--
+314-            residual < zero
+315-            && (
+
+=== PUBLIC SURFACE GUARD ===
+public/DUB surface unchanged: PASS
+
+=== PYTHON SYNTAX ===
+
+=== DMD FULL ADVERSARIAL / DIAGNOSTIC ===
+compiler: dmd
+seed: 0x47454F45
+cases per adversarial class: 2000
+cases per scalar/profile: 16007
+deterministic repeat: every payload is executed twice
+float  sphere      cases=16007 iter_max= 1 bracket_max= 0 astroid=   0 antipodal=   0 short= 119
+float  near-sphere cases=16007 iter_max= 2 bracket_max= 0 astroid=   0 antipodal=   0 short= 119
+float  wgs84       cases=16007 iter_max=10 bracket_max= 8 astroid=1609 antipodal=2480 short=  85
+float  mid-f       cases=16007 iter_max=10 bracket_max= 8 astroid=1643 antipodal=2482 short=  73
+float  max-f       cases=16007 iter_max=10 bracket_max= 8 astroid=1740 antipodal=2490 short=  54
+float  unit-scale  cases=16007 iter_max=10 bracket_max= 8 astroid=1609 antipodal=2480 short=  85
+double sphere      cases=16007 iter_max= 1 bracket_max= 0 astroid=   0 antipodal=   0 short=1486
+double near-sphere cases=16007 iter_max= 2 bracket_max= 0 astroid=   0 antipodal= 877 short=1486
+double wgs84       cases=16007 iter_max=12 bracket_max=10 astroid=2088 antipodal= 877 short=1341
+double mid-f       cases=16007 iter_max=12 bracket_max=10 astroid=2124 antipodal= 877 short=1293
+double max-f       cases=16007 iter_max=12 bracket_max=10 astroid=2229 antipodal= 877 short=1209
+double unit-scale  cases=16007 iter_max=12 bracket_max=10 astroid=2088 antipodal= 877 short=1341
+real   sphere      cases=16007 iter_max= 1 bracket_max= 0 astroid=   0 antipodal=   0 short= 632
+real   near-sphere cases=16007 iter_max= 2 bracket_max= 0 astroid=   0 antipodal=2001 short= 632
+real   wgs84       cases=16007 iter_max=12 bracket_max=10 astroid=2088 antipodal=2001 short= 512
+real   mid-f       cases=16007 iter_max=12 bracket_max=10 astroid=2124 antipodal=2001 short= 477
+real   max-f       cases=16007 iter_max=12 bracket_max=10 astroid=2229 antipodal=2001 short= 396
+real   unit-scale  cases=16007 iter_max=12 bracket_max=10 astroid=2088 antipodal=2001 short= 512
+
+=== GLOBAL DISPATCH COVERAGE ===
+coincidence      6684
+meridian         14742
+equator          18
+generalShort     11852
+generalNewton    254830
+
+=== GLOBAL START COVERAGE ===
+none             21444
+shortLine        11852
+spherical        206849
+antipodal        24322
+antipodalAstroid 23659
+
+=== ADVERSARIAL CATEGORY COVERAGE ===
+antipodal-transition               newton= 36000 short=     0 astroid= 22096 antipodal=  1904
+exact-antipodal                    newton= 29274 short=     0 astroid=     0 antipodal= 22394
+fixed                              newton=    36 short=    12 astroid=    24 antipodal=     0
+latitude2-near-minus-latitude1     newton= 36000 short=     0 astroid=   738 antipodal=    24
+longitude-near-pi                  newton= 36000 short=     0 astroid=   432 antipodal=     0
+near-equatorial                    newton= 36000 short=     0 astroid=   369 antipodal=     0
+near-meridional                    newton= 29796 short=     0 astroid=     0 antipodal=     0
+nearly-coincident                  newton= 15724 short= 11840 astroid=     0 antipodal=     0
+nearly-polar                       newton= 36000 short=     0 astroid=     0 antipodal=     0
+
+max solver iterations: 12
+worst iterations: ('double', 'wgs84', ('longitude-near-pi-1436', 'generalNewton', 'spherical', 10))
+max bracket midpoint count: 10
+worst bracket midpoint count: ('double', 'wgs84', ('longitude-near-pi-1436', 'generalNewton', 'spherical', 12))
+
+non-convergence: 0
+deterministic repeat mismatches: 0
+GEO-E diagnostic/adversarial smoke: PASS
+
+=== LDC FULL ADVERSARIAL / DIAGNOSTIC ===
+compiler: ldc2
+seed: 0x47454F45
+cases per adversarial class: 2000
+cases per scalar/profile: 16007
+deterministic repeat: every payload is executed twice
+float  sphere      cases=16007 iter_max= 1 bracket_max= 0 astroid=   0 antipodal=   0 short= 119
+float  near-sphere cases=16007 iter_max= 2 bracket_max= 0 astroid=   0 antipodal=   0 short= 119
+float  wgs84       cases=16007 iter_max=10 bracket_max= 8 astroid=1609 antipodal=2480 short=  85
+float  mid-f       cases=16007 iter_max=10 bracket_max= 8 astroid=1643 antipodal=2482 short=  73
+float  max-f       cases=16007 iter_max=10 bracket_max= 8 astroid=1740 antipodal=2490 short=  54
+float  unit-scale  cases=16007 iter_max=10 bracket_max= 8 astroid=1609 antipodal=2480 short=  85
+double sphere      cases=16007 iter_max= 1 bracket_max= 0 astroid=   0 antipodal=   0 short=1486
+double near-sphere cases=16007 iter_max= 2 bracket_max= 0 astroid=   0 antipodal= 877 short=1486
+double wgs84       cases=16007 iter_max=12 bracket_max=10 astroid=2088 antipodal= 877 short=1341
+double mid-f       cases=16007 iter_max=12 bracket_max=10 astroid=2124 antipodal= 877 short=1293
+double max-f       cases=16007 iter_max=12 bracket_max=10 astroid=2229 antipodal= 877 short=1209
+double unit-scale  cases=16007 iter_max=12 bracket_max=10 astroid=2088 antipodal= 877 short=1341
+real   sphere      cases=16007 iter_max= 1 bracket_max= 0 astroid=   0 antipodal=   0 short= 632
+real   near-sphere cases=16007 iter_max= 2 bracket_max= 0 astroid=   0 antipodal=2001 short= 632
+real   wgs84       cases=16007 iter_max=12 bracket_max=10 astroid=2088 antipodal=2001 short= 512
+real   mid-f       cases=16007 iter_max=12 bracket_max=10 astroid=2124 antipodal=2001 short= 477
+real   max-f       cases=16007 iter_max=12 bracket_max=10 astroid=2229 antipodal=2001 short= 396
+real   unit-scale  cases=16007 iter_max=12 bracket_max=10 astroid=2088 antipodal=2001 short= 512
+
+=== GLOBAL DISPATCH COVERAGE ===
+coincidence      6684
+meridian         14742
+equator          18
+generalShort     11852
+generalNewton    254830
+
+=== GLOBAL START COVERAGE ===
+none             21444
+shortLine        11852
+spherical        206849
+antipodal        24322
+antipodalAstroid 23659
+
+=== ADVERSARIAL CATEGORY COVERAGE ===
+antipodal-transition               newton= 36000 short=     0 astroid= 22096 antipodal=  1904
+exact-antipodal                    newton= 29274 short=     0 astroid=     0 antipodal= 22394
+fixed                              newton=    36 short=    12 astroid=    24 antipodal=     0
+latitude2-near-minus-latitude1     newton= 36000 short=     0 astroid=   738 antipodal=    24
+longitude-near-pi                  newton= 36000 short=     0 astroid=   432 antipodal=     0
+near-equatorial                    newton= 36000 short=     0 astroid=   369 antipodal=     0
+near-meridional                    newton= 29796 short=     0 astroid=     0 antipodal=     0
+nearly-coincident                  newton= 15724 short= 11840 astroid=     0 antipodal=     0
+nearly-polar                       newton= 36000 short=     0 astroid=     0 antipodal=     0
+
+max solver iterations: 12
+worst iterations: ('double', 'wgs84', ('longitude-near-pi-1436', 'generalNewton', 'spherical', 10))
+max bracket midpoint count: 10
+worst bracket midpoint count: ('double', 'wgs84', ('longitude-near-pi-1436', 'generalNewton', 'spherical', 12))
+
+non-convergence: 0
+deterministic repeat mismatches: 0
+GEO-E diagnostic/adversarial smoke: PASS
+
+=== DMD TARGETED BRACKET SEARCH ===
+compiler: dmd
+seed: 0x47454F4542524143
+target cases per scalar: 250000
+support domain: 0 <= f <= 0.01 only
+search objective: bracketMidpointCount > 0
+float  examined= 250000 bracket_hits=  0 max_iterations= 5
+double examined= 250000 bracket_hits=  0 max_iterations= 5
+real   examined= 250000 bracket_hits=  0 max_iterations= 6
+
+total examined: 750000
+global max iterations: 6
+global worst iteration case: ('real', (179, SearchCase(category='near-equatorial', a=1000000000.0, f=0.009688482497394369, lat1=-1.215388562423037e-06, lon1=1.2711035844964682, lat2=1.053310405762497e-06, lon2=-1.9672518520516231), {'iterations': 6, 'dispatch': 4, 'start': 2, 'brackets': 0, 'converged': True}))
+non-convergence: 0
+bracket midpoint fallback: NOT OBSERVED
+GEO-E bracket trigger search: PASS
+
+=== LDC TARGETED BRACKET SEARCH ===
+compiler: ldc2
+seed: 0x47454F4542524143
+target cases per scalar: 250000
+support domain: 0 <= f <= 0.01 only
+search objective: bracketMidpointCount > 0
+float  examined= 250000 bracket_hits=  0 max_iterations= 5
+double examined= 250000 bracket_hits=  0 max_iterations= 5
+real   examined= 250000 bracket_hits=  0 max_iterations= 6
+
+total examined: 750000
+global max iterations: 6
+global worst iteration case: ('real', (179, SearchCase(category='near-equatorial', a=1000000000.0, f=0.009688482497394369, lat1=-1.215388562423037e-06, lon1=1.2711035844964682, lat2=1.053310405762497e-06, lon2=-1.9672518520516231), {'iterations': 6, 'dispatch': 4, 'start': 2, 'brackets': 0, 'converged': True}))
+non-convergence: 0
+bracket midpoint fallback: NOT OBSERVED
+GEO-E bracket trigger search: PASS
+
+=== DMD INDEPENDENT EXACT-ORACLE DISPATCH ===
+GeodSolve: GeographicLib version 2.7
+seed: 0x47454F44
+cases: 2352
+dispatch kind counts: {0: 28, 1: 154, 4: 1793, 2: 160, 3: 217}
+max normalized distance error: 4.992850577423269e-11
+max exact-direct closure angle: 2.7849784688640372e-15
+max well-conditioned final azimuth error rad: 1.2829737272568309e-12
+max solver iterations: 5
+worst distance: ('unit-scale', 'random-dateline-110', -0.7137995476960736, 3.0581030078818183, 1.3075154650179224, -2.9970734925494673, 2.0198645957, 2.0198645957499286, 4)
+worst closure: ('near-sphere', 'random-near-antipodal-034', -0.6752169899151742, 2.787618493076838, 0.6752086829633097, -0.3539794007792978, 2.784978468864037e-15, 4, 3)
+worst final azimuth: ('sphere', 'random-167', 2.6898175073412984, -2.059229997708761, -2.059229997710044, 1.2829737272568309e-12, 4)
+worst iterations: ('near-sphere', 'random-near-antipodal-025', 0.6297397731154244, 2.7024176297536595, -0.6297394180673069, -0.4391651789448832, 5, 4)
+PASS
+
+=== LDC INDEPENDENT EXACT-ORACLE DISPATCH ===
+GeodSolve: GeographicLib version 2.7
+seed: 0x47454F44
+cases: 2352
+dispatch kind counts: {0: 28, 1: 154, 4: 1793, 2: 160, 3: 217}
+max normalized distance error: 4.992850577423269e-11
+max exact-direct closure angle: 2.2159746341517844e-15
+max well-conditioned final azimuth error rad: 1.2825296380469808e-12
+max solver iterations: 5
+worst distance: ('unit-scale', 'random-dateline-110', -0.7137995476960736, 3.0581030078818183, 1.3075154650179224, -2.9970734925494673, 2.0198645957, 2.0198645957499286, 4)
+worst closure: ('max-f', 'random-240', 0.5438775353140644, -1.7634836550735566, 0.0785008072569795, 2.0952795928901358, 2.2159746341517844e-15, 4, 3)
+worst final azimuth: ('sphere', 'random-167', 2.6898175073412984, -2.0592299977087616, -2.059229997710044, 1.2825296380469808e-12, 4)
+worst iterations: ('near-sphere', 'random-near-antipodal-025', 0.6297397731154244, 2.7024176297536595, -0.6297394180673069, -0.4391651789448832, 5, 4)
+PASS
+
+=== UNIT TESTS / DMD ===
+             Generating test runner configuration 'geodesy-d-test-library' for 'library' (library).
+    Starting Performing "unittest" build using dmd for x86_64.
+  Up-to-date geodesy-d 0.1.1+commit.80.gcf60a80: target for configuration [geodesy-d-test-library] is up to date.
+    Finished To force a rebuild of up-to-date targets, run again with --force
+     Running geodesy-d-test-library 
+19 modules passed unittests
+
+=== UNIT TESTS / LDC ===
+             Generating test runner configuration 'geodesy-d-test-library' for 'library' (library).
+    Starting Performing "unittest" build using ldc2 for x86_64.
+  Up-to-date geodesy-d 0.1.1+commit.80.gcf60a80: target for configuration [geodesy-d-test-library] is up to date.
+    Finished To force a rebuild of up-to-date targets, run again with --force
+     Running geodesy-d-test-library 
+19 modules passed unittests
+
+=== FINAL DIFF CHECK ===
+
+=== FINAL STATUS ===
+ M source/geodesy/internal/geodesic_inverse_dispatch.d
+ M source/geodesy/internal/geodesic_inverse_solver.d
+ M source/geodesy/internal/geodesic_inverse_start.d
+?? research/geodesics/geoe_inverse_probe.d
+?? research/geodesics/search_geoe_bracket.py
+?? research/geodesics/validate_geoe_adversarial.py
+
+GEO-E FINAL ACCEPTANCE EXECUTION: PASS

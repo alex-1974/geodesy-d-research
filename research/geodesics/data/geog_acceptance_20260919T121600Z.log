@@ -1,0 +1,185 @@
+GEO-G geodesic platform/compiler/real-width acceptance
+captured from GitHub Actions on 2026-09-19
+
+repository: alex-1974/geodesy-d
+source branch: validation/geodesics-platform
+source commit: 95f851cf0704386a34fc1cf84de4c8c5db5e5031
+commit message: validation: adopt Dlang practice contracts
+
+workflow: Geodesic platform matrix
+workflow path: .github/workflows/geodesic-platform-matrix.yml
+run id: 35442370160
+run number: 2
+event: push
+started: 2026-09-19T12:16:00Z
+completed: 2026-09-19T12:17:46Z
+conclusion: success
+
+MANDATORY TARGETS
+
+[1] Linux x86_64 / LDC 1.41.0
+job id: 105895294943
+fingerprint:
+  os=Linux
+  architecture=x86_64
+  compiler=LDC
+  frontend_version=2111
+  real.sizeof=16
+  real.alignof=16
+  real.mant_dig=64
+  real_wider_than_double=true
+required steps:
+  Library unit tests                 success
+  Public API contract               success
+  GEO-A portable semantic gate      success
+  Portable analytical/property gate success
+  D real precision preservation     success
+  GEO-F API/runtime gate            success
+precision result:
+  RESULT: GEO-G REAL PRECISION PASS
+runtime result:
+  RESULT: GEO-F PASS
+
+[2] Linux AArch64 / LDC 1.41.0
+job id: 105895295082
+fingerprint:
+  os=Linux
+  architecture=AArch64
+  compiler=LDC
+  frontend_version=2111
+  real.sizeof=16
+  real.alignof=16
+  real.mant_dig=113
+  real_wider_than_double=true
+required steps:
+  Library unit tests                 success
+  Public API contract               success
+  GEO-A portable semantic gate      success
+  Portable analytical/property gate success
+  D real precision preservation     success
+  GEO-F API/runtime gate            success
+precision result:
+  RESULT: GEO-G REAL PRECISION PASS
+runtime result:
+  RESULT: GEO-F PASS
+
+[3] Windows x86_64 / LDC 1.41.0
+job id: 105895294997
+fingerprint:
+  os=Windows
+  architecture=x86_64
+  compiler=LDC
+  frontend_version=2111
+  real.sizeof=8
+  real.alignof=8
+  real.mant_dig=53
+  real_wider_than_double=false
+required steps:
+  Library unit tests                 success
+  Public API contract               success
+  GEO-A portable semantic gate      success
+  Portable analytical/property gate success
+  D real precision preservation     success
+  GEO-F API/runtime gate            success
+precision result:
+  RESULT: PASS (real has no precision beyond double on this target)
+runtime result:
+  RESULT: GEO-F PASS
+
+[4] macOS AArch64 / LDC 1.41.0
+job id: 105895295002
+fingerprint:
+  os=macOS
+  architecture=AArch64
+  compiler=LDC
+  frontend_version=2111
+  real.sizeof=8
+  real.alignof=8
+  real.mant_dig=53
+  real_wider_than_double=false
+required steps:
+  Library unit tests                 success
+  Public API contract               success
+  GEO-A portable semantic gate      success
+  Portable analytical/property gate success
+  D real precision preservation     success
+  GEO-F API/runtime gate            success
+precision result:
+  RESULT: PASS (real has no precision beyond double on this target)
+runtime result:
+  RESULT: GEO-F PASS
+
+[5] macOS x86_64 / LDC 1.41.0
+job id: 105895295034
+fingerprint:
+  os=macOS
+  architecture=x86_64
+  compiler=LDC
+  frontend_version=2111
+  real.sizeof=16
+  real.alignof=16
+  real.mant_dig=64
+  real_wider_than_double=true
+required steps:
+  Library unit tests                 success
+  Public API contract               success
+  GEO-A portable semantic gate      success
+  Portable analytical/property gate success
+  D real precision preservation     success
+  GEO-F API/runtime gate            success
+precision result:
+  RESULT: GEO-G REAL PRECISION PASS
+runtime result:
+  RESULT: GEO-F PASS
+
+[6] Linux x86_64 / DMD 2.111.0
+job id: 105895295003
+fingerprint:
+  os=Linux
+  architecture=x86_64
+  compiler=DMD
+  frontend_version=2111
+  real.sizeof=16
+  real.alignof=16
+  real.mant_dig=64
+  real_wider_than_double=true
+required steps:
+  Library unit tests                 success
+  Public API contract               success
+  GEO-A portable semantic gate      success
+  Portable analytical/property gate success
+  D real precision preservation     success
+  GEO-F API/runtime gate            success
+precision result:
+  RESULT: GEO-G REAL PRECISION PASS
+runtime result:
+  RESULT: GEO-F PASS
+
+INFORMATIONAL TARGET
+
+Windows AArch64 / LDC 1.41.0
+job id: 105895295025
+workflow runner: windows-11-arm
+job conclusion: success
+
+actual D executable fingerprint:
+  os=Windows
+  architecture=x86_64
+  compiler=LDC
+  frontend_version=2111
+  real.sizeof=8
+  real.alignof=8
+  real.mant_dig=53
+  real_wider_than_double=false
+
+This job therefore does NOT constitute native Windows/AArch64 compiler evidence.
+It remains informational and is not used to satisfy the mandatory GEO-G matrix.
+
+GEO-G required real-width evidence:
+  mant_dig == 53   observed and passed
+  mant_dig == 64   observed; wider-real precision preservation passed
+  mant_dig == 113  observed; wider-real precision preservation passed
+
+All six mandatory targets executed the required GEO-G steps successfully.
+
+RESULT: GEO-G PASS
