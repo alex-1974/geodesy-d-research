@@ -124,3 +124,52 @@ The runner records:
 For a controlled baseline, prefer the same CPU/governor/frequency/turbo setup
 used by the existing geodesic benchmark methodology.  Do not compare CI
 timings directly with the XPS numbers.
+
+
+## XPS real-world run
+
+A seven-process run on the project XPS produced the following environment:
+
+- CPU: Intel Core i7-9750H @ 2.60 GHz;
+- kernel: Linux 6.17.0-22-generic x86_64;
+- LDC: 1.41.0;
+- pinned logical CPU: 2;
+- governor: powersave;
+- scaling range: 800 MHz to 4.5 GHz;
+- Intel turbo: enabled;
+- SMT sibling set: 2,8;
+- geodesy-d commit: `b02f46c43122421cda3e8bcda150111886092208`.
+
+Median of the seven process medians:
+
+| outputs | median ns/op | relative to distance |
+| --- | ---: | ---: |
+| distance | 13.251 | 1.00x |
+| reduced length | 25.604 | 1.93x |
+| scales | 28.241 | 2.13x |
+| full | 26.215 | 1.98x |
+
+Observed process-median ranges:
+
+| outputs | min ns/op | max ns/op |
+| --- | ---: | ---: |
+| distance | 12.494 | 14.972 |
+| reduced length | 24.847 | 28.320 |
+| scales | 26.599 | 31.097 |
+| full | 25.580 | 29.095 |
+
+The powersave governor, enabled turbo, broad frequency range, and active SMT
+sibling mean this is a real-world performance run rather than a
+frequency-controlled baseline.  The process-to-process movement is consistent
+with that environment.
+
+The architectural signal is nevertheless strong and consistent with the CI
+smoke run: the full output specialization is only about 2% slower than the
+reduced-length-only specialization by median-of-process-medians, while being
+about 7% faster than the scales-only specialization.  This is explained by
+shared I1/I2/J12 work in the full path.
+
+This supports retaining compile-time quantity capabilities internally.  It
+does not support computing advanced quantities unconditionally: the
+distance-only specialization remains roughly twice as fast as the full
+length-derived quantity set in this focused kernel benchmark.
