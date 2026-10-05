@@ -39,4 +39,4 @@ binary="$tmp/geodesic-quantities-validation"
     -of="$binary"
 
 LD_LIBRARY_PATH="$geographiclib_root/lib:${LD_LIBRARY_PATH:-}" \
-    "$binary"
+    stdbuf -oL -eL "$binary"
