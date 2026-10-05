@@ -65,20 +65,37 @@ echo '=== build codegen probe ==='
 
 "$dc"     "${flags[@]}"     -c     -I"$geodesy_repo/source"     "$bench_dir/source/codegen_probe.d"     "${geodesy_sources[@]}"     -of="$probe_o"
 
-lean_asm="$tmp/probe_direct_lean.asm"
-objdump -dr "$probe_o"     | awk '
+direct_lean_asm="$tmp/probe_direct_lean.asm"
+inverse_lean_asm="$tmp/probe_inverse_lean.asm"
+
+objdump -dr "$probe_o" \
+    | awk '
         /<probe_direct_lean>:/ {capture=1}
         capture {print}
         capture && /^$/ {exit}
-      ' > "$lean_asm"
+      ' > "$direct_lean_asm"
 
-if grep -Eq 'geodesicDirectSignedArea|fillGeodesicC4x|fillGeodesicC4' "$lean_asm"; then
+objdump -dr "$probe_o" \
+    | awk '
+        /<probe_inverse_lean>:/ {capture=1}
+        capture {print}
+        capture && /^$/ {exit}
+      ' > "$inverse_lean_asm"
+
+if grep -Eq 'geodesicDirectSignedArea|fillGeodesicC4x|fillGeodesicC4' "$direct_lean_asm"; then
     echo 'ERROR: lean direct probe references area/C4 machinery' >&2
-    cat "$lean_asm" >&2
+    cat "$direct_lean_asm" >&2
     exit 3
 fi
 
-echo 'codegen direct lean: PASS (no area/C4 reference in probe symbol)'
+if grep -Eq 'geodesicSignedArea|geodesicDirectSignedArea|fillGeodesicC4x|fillGeodesicC4' "$inverse_lean_asm"; then
+    echo 'ERROR: lean inverse probe references area/C4 machinery' >&2
+    cat "$inverse_lean_asm" >&2
+    exit 3
+fi
+
+echo 'codegen direct lean:  PASS (no area/C4 reference in probe symbol)'
+echo 'codegen inverse lean: PASS (no area/C4 reference in probe symbol)'
 
 if [[ "${GEODESIC_QUANTITIES_BUILD_ONLY:-0}" == 1 ]]; then
     exit 0
