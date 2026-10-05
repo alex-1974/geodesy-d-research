@@ -51,3 +51,32 @@ Keep the candidate only if:
 
 The intended architecture remains: public semantic operations, internal
 compile-time output specialization.
+
+
+## XPS candidate run
+
+Candidate commit:
+
+`08d047ae41ae8707c8d8308f0e12b0851aecd610`
+
+Seven independent process runs on the project XPS with LDC 1.41.0 produced
+these medians of the process medians:
+
+| corpus | forward ns/op | factors ns/op |
+| --- | ---: | ---: |
+| UTM-like | 258.972 | 345.380 |
+| ordinary | 272.662 | 357.697 |
+| wide | 283.813 | 370.166 |
+
+Observed process-median ranges:
+
+| corpus | forward range | factors range |
+| --- | --- | --- |
+| UTM-like | 251.398 .. 274.994 | 333.685 .. 365.472 |
+| ordinary | 255.078 .. 285.883 | 338.269 .. 374.939 |
+| wide | 275.287 .. 295.801 | 362.189 .. 388.409 |
+
+This candidate-only run is not sufficient for an XPS speedup claim. A second
+run of the identical harness against the exact develop baseline is required so
+both sides share the same machine, compiler, affinity, governor, turbo state,
+and benchmark source.
