@@ -88,3 +88,39 @@ The first result nevertheless supports the architecture: requesting all three
 length-derived quantity families together is substantially cheaper than
 computing reduced length and scales in separate calls because the full
 instantiation shares the I1/I2 and J12 work.
+
+
+## Controlled local XPS run
+
+For a release-quality comparison, run the benchmark from the research checkout
+while the sibling geodesy-d checkout is on
+`feature/m2-geodesic-output-specialization`.
+
+Example:
+
+~~~bash
+cd ~/Programmiersprachen/dlang/d-geospatial-workspace/libs/geodesy-d-research
+
+GEODESY_D_REPO=../geodesy-d \
+DC=ldc2 \
+GEODESIC_OUTPUT_CPU=2 \
+GEODESIC_OUTPUT_RUNS=7 \
+bash research/m2-geodesic-output-specialization/run-runtime.sh \
+    | tee geodesic-output-specialization-xps.txt
+~~~
+
+The runner records:
+
+- geodesy-d commit and branch;
+- compiler version;
+- CPU model and kernel;
+- CPU affinity;
+- scaling governor;
+- min/max scaling frequency;
+- Intel turbo state when available;
+- SMT sibling mapping;
+- seven independent process runs by default.
+
+For a controlled baseline, prefer the same CPU/governor/frequency/turbo setup
+used by the existing geodesic benchmark methodology.  Do not compare CI
+timings directly with the XPS numbers.
