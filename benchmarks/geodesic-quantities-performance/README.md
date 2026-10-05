@@ -51,3 +51,33 @@ The benchmark intentionally does not impose a maximum cost on the advanced
 quantity overloads. Their cost is reported so the M2 baseline is explicit;
 the acceptance criterion is that the lean v1 paths do not regress materially
 because the additive quantity API exists.
+
+
+## Controlled XPS evidence
+
+Recorded on geodesy-d `develop` commit
+`171b6e79ac78e2c4d11822ab086d24af085624d0` with LDC 1.41.0 on an Intel
+Core i7-9750H, logical CPU 2, using
+`-release -O3 -enable-inlining -mcpu=native`.
+
+Each mode used 12 separate pinned processes. Each process used 8 warmups and 24
+timed traversals of 16,384 operations.
+
+| mode | process median |
+| --- | ---: |
+| direct lean | 350.286865 ns/op |
+| direct + quantities | 469.384766 ns/op |
+| inverse lean | 941.571045 ns/op |
+| inverse + quantities | 1060.443115 ns/op |
+
+Advanced quantity overhead relative to the corresponding lean public path:
+
+- direct: +119.097901 ns/op, +34.00%;
+- inverse: +118.872070 ns/op, +12.62%.
+
+The direct lean codegen gate passed: the probe symbol had no direct area/C4
+reference. The inverse lean probe is now checked symmetrically as well.
+
+These results establish the M2/#33 baseline: the additive quantity APIs have
+explicit, measured cost, while the frozen lean public overloads remain
+compile-time-separated from area/C4 work.
