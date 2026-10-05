@@ -202,3 +202,39 @@ The current direction is:
   `GeodesicLine` capabilities or the polygon accumulator;
 - keep the signed-area numerical kernel independent of that lifetime/storage
   policy by accepting prepared C4 data from its caller.
+
+
+## GeographicLib 2.7 signed-area differential validation
+
+The research workflow builds GeographicLib **v2.7** from the pinned upstream
+tag and compares the internal compile-time area dispatch directly against
+`Geodesic::GenInverse(..., AREA, ..., S12)`.
+
+The acceptance envelope is:
+
+~~~text
+abs(actual - reference)
+    <= 1e-14 * max(abs(reference), a^2) + 1e-6
+~~~
+
+All selected cases pass:
+
+| case | absolute S12 error |
+| --- | ---: |
+| Vienna -> Graz | 4.272461e-4 |
+| reversed ordinary case | 4.272461e-4 |
+| antimeridian | 3.433228e-4 |
+| near-antipodal | 3.750000e-1 |
+| meridian | 0 |
+| equator | 0 |
+| coincident | 0 |
+| sphere | 3.125000e-2 |
+| f = 0.01 support boundary | 0 |
+| scaled ellipsoid | 1.907349e-6 |
+
+The independent reversal check also returned exactly zero for
+`S(A,B) + S(B,A)` in the representative test.
+
+This validates the C4 transcription, authalic term, omega handling, canonical
+orientation restoration, and signed-area convention against GeographicLib
+2.7 for the researched inverse slice.
