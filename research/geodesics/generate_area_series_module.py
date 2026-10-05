@@ -139,6 +139,7 @@ package(geodesy):
 {arrays}
 
 
+/** Evaluate an integer-coefficient polynomial at x with Horner's method. */
 private W polynomialFromIntegers(W, size_t N)(
     const ref long[N] coefficients,
     const size_t offset,
@@ -155,6 +156,7 @@ private W polynomialFromIntegers(W, size_t N)(
 }}
 
 
+/** Evaluate a working-scalar polynomial at x with Horner's method. */
 private W polynomialFromScalars(W, size_t N)(
     const ref W[N] coefficients,
     const size_t offset,
@@ -171,6 +173,7 @@ private W polynomialFromScalars(W, size_t N)(
 }}
 
 
+/** Prepare packed C4 polynomials from one order-specific coefficient table. */
 private void fillC4xFromCoefficients(
     W,
     int order,
