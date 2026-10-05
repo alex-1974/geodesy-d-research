@@ -155,7 +155,7 @@ void checkCase(
      * rounding at O(a^2).
      */
     const double tolerance =
-        5.0e-13 * magnitude
+        1.0e-14 * magnitude
         + 1.0e-6;
 
     const bool pass =
@@ -319,7 +319,9 @@ void main()
 
     writefln(
         "%s %-22s abs=% .6e",
-        antisymmetryError <= 1.0,
+        antisymmetryError <= 1.0
+            ? "PASS"
+            : "FAIL",
         "antisymmetry",
         antisymmetryError);
 
