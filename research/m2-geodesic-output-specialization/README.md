@@ -173,3 +173,32 @@ This supports retaining compile-time quantity capabilities internally.  It
 does not support computing advanced quantities unconditionally: the
 distance-only specialization remains roughly twice as fast as the full
 length-derived quantity set in this focused kernel benchmark.
+
+
+## C4 area-series preparation cost
+
+A dedicated LDC 1.41.0 CI smoke probe measured the order-6 C4 stages
+separately:
+
+| stage | median ns/op | p25 | p75 |
+| --- | ---: | ---: | ---: |
+| C4x prepare from ellipsoid n | 31.525 | 31.433 | 31.641 |
+| C4 evaluate from prepared C4x | 6.946 | 6.854 | 7.281 |
+| prepare + evaluate | 41.144 | 41.040 | 41.205 |
+
+This materially changes the storage/preparation trade-off.  C4 evaluation is
+cheap once the ellipsoid-dependent table exists, but preparing that table is
+several times more expensive.
+
+The base `Geodesic!T` type should therefore not automatically gain a
+`W[36]` C4 table merely because area is available in M2.  For `double` that
+would add 288 bytes of area-only coefficient storage to every prepared solver.
+
+The current direction is:
+
+- keep ordinary `Geodesic!T` lean;
+- let one-shot explicitly requested area operations pay C4 preparation;
+- cache C4 preparation in repeated-use area contexts such as
+  `GeodesicLine` capabilities or the polygon accumulator;
+- keep the signed-area numerical kernel independent of that lifetime/storage
+  policy by accepting prepared C4 data from its caller.
