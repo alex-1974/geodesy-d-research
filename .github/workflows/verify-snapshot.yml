@@ -3,7 +3,7 @@ name: Verify initial snapshot
 on:
   push:
     branches:
-      - main
+      - develop
   pull_request:
   workflow_dispatch:
 
