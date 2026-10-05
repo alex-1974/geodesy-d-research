@@ -80,3 +80,32 @@ This candidate-only run is not sufficient for an XPS speedup claim. A second
 run of the identical harness against the exact develop baseline is required so
 both sides share the same machine, compiler, affinity, governor, turbo state,
 and benchmark source.
+
+
+## XPS baseline comparison
+
+The same harness was then run seven times against the exact develop baseline
+`faa587d6d7469c4e1e94edc42575a0c7dc164b99` on the same XPS.
+
+Median of seven process medians:
+
+| corpus | baseline forward | candidate forward | forward change | baseline factors | candidate factors | factors change | factors speedup |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| UTM-like | 265.393 ns | 258.972 ns | -2.42% | 610.260 ns | 345.380 ns | -43.40% | 1.767x |
+| ordinary | 278.479 ns | 272.662 ns | -2.09% | 631.073 ns | 357.697 ns | -43.32% | 1.764x |
+| wide | 289.526 ns | 283.813 ns | -1.97% | 662.238 ns | 370.166 ns | -44.10% | 1.789x |
+
+The final wide-baseline process showed an obvious transient slowdown
+(353.735 ns forward / 753.333 ns factors), but the median-of-seven comparison
+is insensitive to that outlier.
+
+The XPS result confirms the intended architectural benefit:
+
+- factor evaluation is consistently about 43--44% faster, or about 1.77x;
+- forward-only does not regress and is about 2% faster in this environment;
+- the gain reproduces independently of the GitHub-hosted runner, although the
+  absolute CI speedup was larger.
+
+This is sufficient performance evidence to keep the internal compile-time
+forward-output specialization, subject to the normal merge gates and code-size
+review.
