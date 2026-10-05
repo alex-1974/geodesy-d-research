@@ -56,6 +56,16 @@ jobs:
           bash research/m2-geodesic-output-specialization/run-runtime.sh \
             | tee geodesic-output-specialization-runtime.txt
 
+      - name: C4 preparation smoke benchmark
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          DC: ldc2
+          GEODESIC_C4_RUNS: 1
+        run: |
+          bash research/m2-geodesic-output-specialization/run-c4-runtime.sh \
+            | tee geodesic-c4-runtime.txt
+
       - name: Upload specialization evidence
         uses: actions/upload-artifact@v5
         with:
@@ -63,3 +73,4 @@ jobs:
           path: |
             geodesic-output-specialization-codegen.txt
             geodesic-output-specialization-runtime.txt
+            geodesic-c4-runtime.txt
