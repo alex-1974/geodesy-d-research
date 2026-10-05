@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "research/m2-geodesic-line/**"
+      - "benchmarks/geodesic-line/**"
       - ".github/workflows/m2-geodesic-line.yml"
   workflow_dispatch:
 
@@ -56,6 +57,16 @@ jobs:
           CXX: g++
         run: |
           bash research/m2-geodesic-line/run.sh             | tee geodesic-line-validation.txt
+
+      - name: Build repeated-position benchmark
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEODESIC_LINE_BUILD_ONLY: 1
+          GEODESIC_LINE_CPU: 2
+          DC: ldc2
+        run: |
+          bash benchmarks/geodesic-line/run.sh
 
       - name: Upload evidence
         uses: actions/upload-artifact@v5
