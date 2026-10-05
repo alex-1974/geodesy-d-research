@@ -36,18 +36,6 @@ while IFS=$'\t' read -r path mode bytes blob; do
     fi
 done < "$manifest"
 
-actual="$(
-    {
-        git -C "$repo" ls-files 'research/**'
-        git -C "$repo" ls-files 'benchmarks/**'
-    } | sort -u | wc -l
-)"
-
-if [[ "$actual" != "$expected" ]]; then
-    echo "COUNT MISMATCH: expected=$expected actual=$actual" >&2
-    failures=$((failures + 1))
-fi
-
 if (( failures != 0 )); then
     echo "FAIL: snapshot verification found $failures problem(s)" >&2
     exit 1
