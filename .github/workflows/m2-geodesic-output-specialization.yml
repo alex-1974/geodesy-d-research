@@ -47,8 +47,19 @@ jobs:
           bash research/m2-geodesic-output-specialization/run-codegen.sh \
             | tee geodesic-output-specialization-codegen.txt
 
-      - name: Upload codegen evidence
+      - name: Runtime specialization smoke benchmark
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          DC: ldc2
+        run: |
+          bash research/m2-geodesic-output-specialization/run-runtime.sh \
+            | tee geodesic-output-specialization-runtime.txt
+
+      - name: Upload specialization evidence
         uses: actions/upload-artifact@v5
         with:
-          name: geodesic-output-specialization-codegen
-          path: geodesic-output-specialization-codegen.txt
+          name: geodesic-output-specialization
+          path: |
+            geodesic-output-specialization-codegen.txt
+            geodesic-output-specialization-runtime.txt
