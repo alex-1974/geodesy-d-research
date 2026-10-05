@@ -49,3 +49,42 @@ experiment does not recommend exposing a public mask API.
 
 The next stage is a controlled runtime benchmark using the same four
 instantiations after codegen specialization has been confirmed.
+
+
+## Initial LDC 1.41.0 evidence
+
+GitHub Actions on ubuntu-24.04, using geodesy-d commit
+`b02f46c43122421cda3e8bcda150111886092208`, produced the following
+specialized `geodesicLengths!(double, 6, outputs)` symbol sizes:
+
+| outputs | capability value | kernel bytes |
+| --- | ---: | ---: |
+| distance | 1 | 524 |
+| reduced length | 2 | 1117 |
+| scales | 4 | 984 |
+| full | 7 | 1105 |
+
+The sizes confirm distinct compile-time instantiations rather than one common
+runtime-dispatch body.  The reduced-only path is slightly larger than the full
+path because it uses the dedicated `A1*C1 - A2*C2` combination when distance
+is not requested; the full path can reuse the distance-series intermediates.
+
+The same CI run produced this runtime smoke result:
+
+| outputs | median ns/op | p25 | p75 |
+| --- | ---: | ---: | ---: |
+| distance | 14.172 | 14.148 | 14.197 |
+| reduced length | 26.086 | 25.909 | 26.562 |
+| scales | 32.440 | 31.885 | 32.843 |
+| full | 30.054 | 29.480 | 30.530 |
+
+These timings are **trend evidence only**. GitHub-hosted runners are not a
+controlled performance environment.  Release-quality performance conclusions
+must be reproduced on the controlled local benchmark machine with CPU
+affinity, governor/frequency state, compiler version, and repeated-process
+measurements recorded.
+
+The first result nevertheless supports the architecture: requesting all three
+length-derived quantity families together is substantially cheaper than
+computing reduced length and scales in separate calls because the full
+instantiation shares the I1/I2 and J12 work.
