@@ -1,0 +1,8 @@
+name "geodesy-d-inverse-analysis"
+description "EPSG 9602 inverse refinement analysis for geodesy-d."
+authors "Alexander Bernardi"
+license "MIT"
+targetType "executable"
+sourcePaths "source"
+
+dependency "geodesy-d" path="../../../libs/geodesy-d"
