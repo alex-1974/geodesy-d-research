@@ -84,10 +84,20 @@ printf 'scaling max kHz:  %s\n' "$scaling_max"
 printf 'intel no_turbo:   %s\n' "$no_turbo"
 printf 'thread siblings:  %s\n' "$thread_siblings"
 
-"$dc"     -release     -O3     -enable-inlining     -mcpu=native     -I"$geodesy_repo/source"     "$bench"     "$probe"     "$geodesy_repo/source/geodesy/internal/geodesic_lengths.d"     "$geodesy_repo/source/geodesy/internal/geodesic_series.d"     -of=for ((run = 1; run <= runs; ++run)); do
+"$dc" \
+    -release \
+    -O3 \
+    -enable-inlining \
+    -mcpu=native \
+    -I"$geodesy_repo/source" \
+    "$bench" \
+    "$probe" \
+    "$geodesy_repo/source/geodesy/internal/geodesic_lengths.d" \
+    "$geodesy_repo/source/geodesy/internal/geodesic_series.d" \
+    -of="$binary"
+
+for ((run = 1; run <= runs; ++run)); do
     echo
     echo "=== process run $run/$runs on logical CPU $cpu ==="
     taskset -c "$cpu" "$binary"
 done
-
-"$binary"
