@@ -1,0 +1,70 @@
+name: M2 geodesic direct quantities
+
+on:
+  pull_request:
+    paths:
+      - "research/m2-geodesic-direct-quantities/**"
+      - ".github/workflows/m2-geodesic-direct-quantities.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout research
+        uses: actions/checkout@v6
+
+      - name: Checkout geodesy-d direct quantities branch
+        uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: feature/m2-geodesic-direct-quantities
+          path: geodesy-d
+          persist-credentials: false
+
+      - name: Checkout GeographicLib 2.7
+        uses: actions/checkout@v6
+        with:
+          repository: geographiclib/geographiclib
+          ref: v2.7
+          path: geographiclib
+          persist-credentials: false
+
+      - name: Install LDC baseline
+        uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ldc-1.41.0
+
+      - name: Build GeographicLib 2.7
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cmake \
+            -S geographiclib \
+            -B geographiclib-build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/geographiclib-2.7" \
+            -DBUILD_SHARED_LIBS=ON
+          cmake --build geographiclib-build --parallel 2
+          cmake --install geographiclib-build
+
+      - name: Validate public direct quantities API
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEOGRAPHICLIB_ROOT: ${{ runner.temp }}/geographiclib-2.7
+          DC: ldc2
+          CXX: g++
+        run: |
+          bash research/m2-geodesic-direct-quantities/run.sh \
+            | tee geodesic-direct-quantities-validation.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: geodesic-direct-quantities-validation
+          path: geodesic-direct-quantities-validation.txt
