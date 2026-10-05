@@ -37,9 +37,9 @@ printf 'compiler:         %s\n' "$("$dc" --version | sed -n '1p')"
 "$dc"     -c     -release     -O3     -enable-inlining     -I"$geodesy_repo/source"     "$probe"     "$geodesy_repo/source/geodesy/internal/geodesic_lengths.d"     "$geodesy_repo/source/geodesy/internal/geodesic_series.d"     -of="$object"
 
 echo
-echo '=== wrapper symbol sizes ==='
+echo '=== relevant symbol sizes ==='
 "$nm_tool"     --print-size     --size-sort     --radix=d     "$object" |
-    grep 'probe_geodesic_length_' || true
+    grep -E 'probe_geodesic_length_|geodesicLengths' || true
 
 echo
 echo '=== wrapper assembly ==='
