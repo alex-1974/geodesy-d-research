@@ -81,9 +81,9 @@ void fillCases(Case[] cases)
     }
 }
 
-alias Kernel = double function(
+extern(C) alias Kernel = double function(
     double, double, double, double, double, double,
-    double, double, double, double, double) extern(C);
+    double, double, double, double, double);
 
 double timeKernel(Kernel kernel, const Case[] cases)
 {
