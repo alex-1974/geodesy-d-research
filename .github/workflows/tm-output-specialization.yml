@@ -1,0 +1,68 @@
+name: TM output specialization
+
+on:
+  pull_request:
+    paths:
+      - "research/tm-output-specialization/**"
+      - ".github/workflows/tm-output-specialization.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout research
+        uses: actions/checkout@v6
+
+      - name: Checkout baseline geodesy-d
+        uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: develop
+          path: geodesy-baseline
+          persist-credentials: false
+
+      - name: Checkout candidate geodesy-d
+        uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: feature/tm-output-specialization-prototype
+          path: geodesy-candidate
+          persist-credentials: false
+
+      - name: Install LDC baseline
+        uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ldc-1.41.0
+
+      - name: Baseline
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-baseline
+          TM_OUTPUT_RUNS: 3
+          DC: ldc2
+        run: |
+          bash research/tm-output-specialization/run.sh \
+            | tee tm-output-baseline.txt
+
+      - name: Candidate
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-candidate
+          TM_OUTPUT_RUNS: 3
+          DC: ldc2
+        run: |
+          bash research/tm-output-specialization/run.sh \
+            | tee tm-output-candidate.txt
+
+      - name: Upload evidence
+        uses: actions/upload-artifact@v5
+        with:
+          name: tm-output-specialization
+          path: |
+            tm-output-baseline.txt
+            tm-output-candidate.txt
