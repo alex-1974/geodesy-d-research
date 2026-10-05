@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Benchmark output and numeric shell utilities must use a stable decimal point
+# independent of the caller's locale (e.g. de_AT/de_DE use a decimal comma).
+export LC_ALL=C
+
 root="$(
     cd "$(dirname "${BASH_SOURCE[0]}")/../.." &&
     pwd
