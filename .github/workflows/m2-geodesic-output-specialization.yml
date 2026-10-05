@@ -26,10 +26,31 @@ jobs:
           path: geodesy-d
           persist-credentials: false
 
+      - name: Checkout GeographicLib 2.7
+        uses: actions/checkout@v6
+        with:
+          repository: geographiclib/geographiclib
+          ref: v2.7
+          path: geographiclib
+          persist-credentials: false
+
       - name: Install LDC baseline
         uses: dlang-community/setup-dlang@v2
         with:
           compiler: ldc-1.41.0
+
+      - name: Build GeographicLib 2.7
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cmake \
+            -S geographiclib \
+            -B geographiclib-build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/geographiclib-2.7" \
+            -DBUILD_SHARED_LIBS=ON
+          cmake --build geographiclib-build --parallel 2
+          cmake --install geographiclib-build
 
       - name: Toolchain
         shell: bash
@@ -66,6 +87,17 @@ jobs:
           bash research/m2-geodesic-output-specialization/run-c4-runtime.sh \
             | tee geodesic-c4-runtime.txt
 
+      - name: GeographicLib 2.7 signed-area validation
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEOGRAPHICLIB_ROOT: ${{ runner.temp }}/geographiclib-2.7
+          DC: ldc2
+          CXX: g++
+        run: |
+          bash research/m2-geodesic-output-specialization/run-area-validation.sh \
+            | tee geodesic-area-validation.txt
+
       - name: Upload specialization evidence
         uses: actions/upload-artifact@v5
         with:
@@ -74,3 +106,4 @@ jobs:
             geodesic-output-specialization-codegen.txt
             geodesic-output-specialization-runtime.txt
             geodesic-c4-runtime.txt
+            geodesic-area-validation.txt
