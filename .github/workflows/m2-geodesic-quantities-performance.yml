@@ -1,0 +1,41 @@
+name: M2 geodesic quantities performance smoke
+
+on:
+  pull_request:
+    paths:
+      - "benchmarks/geodesic-quantities-performance/**"
+      - ".github/workflows/m2-geodesic-quantities-performance.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-codegen:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout research
+        uses: actions/checkout@v6
+
+      - name: Checkout geodesy-d develop
+        uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: develop
+          path: geodesy-d
+          persist-credentials: false
+
+      - name: Install LDC baseline
+        uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ldc-1.41.0
+
+      - name: Build benchmark and qualify lean direct codegen
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEODESIC_QUANTITIES_BUILD_ONLY: 1
+          GEODESIC_QUANTITIES_CPU: 2
+          DC: ldc2
+        run: bash benchmarks/geodesic-quantities-performance/run.sh
