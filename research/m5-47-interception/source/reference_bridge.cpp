@@ -44,6 +44,39 @@ int m5_47_reference(
 
     try {
         GeographicLib::Geodesic geod(a, f);
+
+        double sAB, aziAB1, aziAB2;
+        geod.Inverse(latAd, lonAd, latBd, lonBd, sAB, aziAB1, aziAB2);
+        if (!(sAB > 0.0) || !std::isfinite(sAB))
+            return 0;
+
+        double sAC, ac1, ac2;
+        geod.Inverse(latAd, lonAd, latCd, lonCd, sAC, ac1, ac2);
+        if (sAC == 0.0) {
+            *footLat = latA;
+            *footLon = lonA;
+            *alongTrack = 0.0;
+            *signedCrossTrack = 0.0;
+            *segmentNearestLat = latA;
+            *segmentNearestLon = lonA;
+            *segmentNearestDistance = 0.0;
+            *segmentClass = 1;
+            return 1;
+        }
+
+        double sBC, bc1, bc2;
+        geod.Inverse(latBd, lonBd, latCd, lonCd, sBC, bc1, bc2);
+        if (sBC == 0.0) {
+            *footLat = latB;
+            *footLon = lonB;
+            *alongTrack = sAB;
+            *signedCrossTrack = 0.0;
+            *segmentNearestLat = latB;
+            *segmentNearestLon = lonB;
+            *segmentNearestDistance = 0.0;
+            *segmentClass = 2;
+            return 1;
+        }
         GeographicLib::Gnomonic gnom(geod);
 
         const double latAd = latA * degreePerRadian;
@@ -93,9 +126,6 @@ int m5_47_reference(
 
         *footLat = centerLat / degreePerRadian;
         *footLon = centerLon / degreePerRadian;
-
-        double sAB, aziAB1, aziAB2;
-        geod.Inverse(latAd, lonAd, latBd, lonBd, sAB, aziAB1, aziAB2);
 
         double sAO, aziAO1, aziAO2;
         geod.Inverse(latAd, lonAd, centerLat, centerLon,
