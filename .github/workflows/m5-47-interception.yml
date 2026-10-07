@@ -1,0 +1,70 @@
+name: M5 #47 interception research
+
+on:
+  pull_request:
+    paths:
+      - "research/m5-47-interception/**"
+      - ".github/workflows/m5-47-interception.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  differential:
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - dmd-2.111.0
+          - ldc-1.41.0
+
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout research
+        uses: actions/checkout@v6
+
+      - name: Checkout geodesy-d develop
+        uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: develop
+          path: geodesy-d
+          persist-credentials: false
+
+      - name: Checkout GeographicLib 2.7
+        uses: actions/checkout@v6
+        with:
+          repository: geographiclib/geographiclib
+          ref: v2.7
+          path: geographiclib
+          persist-credentials: false
+
+      - name: Install D compiler
+        uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ${{ matrix.compiler }}
+
+      - name: Build GeographicLib 2.7
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cmake \
+            -S geographiclib \
+            -B geographiclib-build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/geographiclib-2.7" \
+            -DBUILD_SHARED_LIBS=ON
+          cmake --build geographiclib-build --parallel 2
+          cmake --install geographiclib-build
+
+      - name: Run interception differential probe
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEOGRAPHICLIB_ROOT: ${{ runner.temp }}/geographiclib-2.7
+          DC: ${{ startsWith(matrix.compiler, 'dmd') && 'dmd' || 'ldc2' }}
+          CXX: g++
+        run: |
+          bash research/m5-47-interception/run.sh
