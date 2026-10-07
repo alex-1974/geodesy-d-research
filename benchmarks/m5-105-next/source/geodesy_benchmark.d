@@ -61,7 +61,7 @@ int main()
     enum size_t warmups = 4;
     enum size_t rounds = 64;
 
-    double checksum;
+    double checksum = 0.0;
 
     foreach (_;0..warmups)
         foreach (i;0..count)
@@ -101,7 +101,7 @@ int main()
     foreach (i; 0 .. count)
     {
         enum size_t diagnosticRounds = 32;
-        double caseChecksum;
+        double caseChecksum = 0.0;
         const caseStart = MonoTime.currTime;
 
         foreach (_; 0 .. diagnosticRounds)
