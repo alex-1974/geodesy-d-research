@@ -1,0 +1,65 @@
+name: M5 #47 nearest performance build
+
+on:
+  pull_request:
+    paths:
+      - "benchmarks/m5-47-nearest/**"
+      - ".github/workflows/m5-47-nearest-performance.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout research
+        uses: actions/checkout@v6
+
+      - name: Checkout geodesy-d candidate
+        uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: feature/m5-geodesic-segment-nearest
+          path: geodesy-d
+          persist-credentials: false
+
+      - name: Checkout GeographicLib 2.7
+        uses: actions/checkout@v6
+        with:
+          repository: geographiclib/geographiclib
+          ref: v2.7
+          path: geographiclib
+          persist-credentials: false
+
+      - name: Install LDC 1.41.0
+        uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ldc-1.41.0
+
+      - name: Build GeographicLib 2.7
+        shell: bash
+        run: |
+          set -euxo pipefail
+          cmake \
+            -S geographiclib \
+            -B geographiclib-build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/geographiclib-2.7" \
+            -DBUILD_SHARED_LIBS=ON
+          cmake --build geographiclib-build --parallel 2
+          cmake --install geographiclib-build
+
+      - name: Build and smoke-run both benchmark binaries
+        shell: bash
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEOGRAPHICLIB_ROOT: ${{ runner.temp }}/geographiclib-2.7
+          DC: ldc2
+          CXX: g++
+          M5_47_CPU: 0
+          M5_47_RUNS: 1
+        run: |
+          bash benchmarks/m5-47-nearest/run.sh
