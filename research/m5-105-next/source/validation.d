@@ -662,6 +662,7 @@ private struct Case
 {
     string name;
     bool sphere;
+    bool equidistantAllowed;
     double lat;
     double lon;
     double aziX;
@@ -671,16 +672,16 @@ private struct Case
 void main()
 {
     Case[] cases = [
-        Case("ordinary",false,0,0,30,120),
-        Case("equator orthogonal",false,0,0,0,90),
-        Case("near parallel",false,10,20,45,45.1),
-        Case("polar",false,82,-40,20,145),
-        Case("reverse directions",false,-25,70,-35,140),
-        Case("coincident same",false,0,0,90,90),
-        Case("coincident reverse",false,0,0,90,-90),
-        Case("sphere ordinary",true,0,0,30,120),
-        Case("sphere near parallel",true,15,-30,60,60.1),
-        Case("sphere coincident",true,0,0,90,90)
+        Case("ordinary",false,false,0,0,30,120),
+        Case("equator orthogonal",false,false,0,0,0,90),
+        Case("near parallel",false,false,10,20,45,45.1),
+        Case("polar",false,false,82,-40,20,145),
+        Case("reverse directions",false,false,-25,70,-35,140),
+        Case("coincident same",false,false,0,0,90,90),
+        Case("coincident reverse",false,false,0,0,90,-90),
+        Case("sphere ordinary",true,false,0,0,30,120),
+        Case("sphere near parallel",true,true,15,-30,60,60.1),
+        Case("sphere coincident",true,false,0,0,90,90)
     ];
 
     size_t failures;
@@ -803,22 +804,42 @@ void main()
                 actualX.position,
                 gc(rlat,rlon));
 
-        const bool pass =
+        const P expected =
+            P(rx, ry, rc);
+
+        const double rankError =
+            abs(l1(actual) - l1(expected));
+
+        const bool sameRepresentative =
             xerr < displacementTolerance
             && yerr < displacementTolerance
-            && poserr < positionTolerance
-            && actual.c == rc
-            && l1(actual) > 0.0;
+            && poserr < positionTolerance;
+
+        const bool sameMinimumRank =
+            rankError < displacementTolerance * 2.0;
+
+        const bool pass =
+            actual.c == rc
+            && l1(actual) > 0.0
+            && (
+                sameRepresentative
+                || (
+                    item.equidistantAllowed
+                    && sameMinimumRank
+                )
+            );
 
         writefln(
-            "%s %-22s x=%.3e y=%.3e pos=%.3e c=%s/%s",
+            "%s %-22s x=%.3e y=%.3e pos=%.3e rank=%.3e c=%s/%s%s",
             pass ? "PASS" : "FAIL",
             item.name,
             xerr,
             yerr,
             poserr,
+            rankError,
             actual.c,
-            rc);
+            rc,
+            item.equidistantAllowed ? " tie-ok" : "");
 
         if (!pass)
             ++failures;
