@@ -129,6 +129,35 @@ bool solveProbe(
 {
     result = ProbeResult.init;
 
+    const auto segment = solver.inverse(a, b);
+
+    if (segment.distance == 0.0)
+        return false;
+
+    const auto fromStart = solver.inverse(a, c);
+    if (fromStart.distance == 0.0)
+    {
+        result.foot = a;
+        result.alongTrack = 0.0;
+        result.signedCrossTrack = 0.0;
+        result.segmentNearest = a;
+        result.segmentNearestDistance = 0.0;
+        result.segmentClass = 1;
+        return true;
+    }
+
+    const auto fromEnd = solver.inverse(b, c);
+    if (fromEnd.distance == 0.0)
+    {
+        result.foot = b;
+        result.alongTrack = segment.distance;
+        result.signedCrossTrack = 0.0;
+        result.segmentNearest = b;
+        result.segmentNearestDistance = 0.0;
+        result.segmentClass = 2;
+        return true;
+    }
+
     GeographicCoordinate!double center = c;
 
     foreach (k; 0 .. 2)
@@ -161,7 +190,7 @@ bool solveProbe(
         center = next;
     }
 
-    const auto invAB = solver.inverse(a, b);
+    const auto invAB = segment;
     const auto invAO = solver.inverse(a, center);
     const double deltaA =
         wrapPi(invAO.initialAzimuth.radians - invAB.initialAzimuth.radians);
@@ -237,6 +266,7 @@ void main()
         Case("near equator", 0.0, -20.0, 0.0, 20.0, -2.0, 3.0),
         Case("on track", 0.0, -20.0, 0.0, 20.0, 0.0, 3.0),
         Case("at start", 10.0, 10.0, 12.0, 20.0, 10.0, 10.0),
+        Case("at end", 10.0, 10.0, 12.0, 20.0, 12.0, 20.0),
         Case("reversed track", 42.0, -60.0, 40.0, -75.0, 38.0, -66.0),
     ];
 
