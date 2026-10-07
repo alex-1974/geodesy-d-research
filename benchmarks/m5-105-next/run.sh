@@ -34,6 +34,9 @@ run_one() {
     value="$(awk -F= '/^ns_per_op=/ {print $2}' <<<"$output")"
     checksum="$(awk -F= '/^checksum=/ {print $2}' <<<"$output")"
     printf '%2d  %12.6f ns/op checksum=%s\n' "$i" "$value" "$checksum"
+    if [[ "$i" -eq 1 ]]; then
+      awk '/^case_ns_per_op\./ {print}' <<<"$output"
+    fi
     printf '%s\n' "$value" >> "$values"
   done
   median_file "$values"
