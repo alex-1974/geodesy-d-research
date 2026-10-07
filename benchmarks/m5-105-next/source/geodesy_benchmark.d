@@ -3,7 +3,7 @@ module m5_105_next_benchmark;
 import geodesy;
 
 import core.time : MonoTime;
-import std.stdio : writefln;
+import std.stdio : stderr, writefln;
 
 private struct Case
 {
@@ -18,7 +18,7 @@ private GeographicCoordinate!double gc(double lat,double lon)
         Longitude!double.fromDegrees(lon));
 }
 
-void main()
+int main()
 {
     const solver =
         Geodesic!double.fromEllipsoid(
@@ -66,11 +66,17 @@ void main()
         foreach (i;0..count)
         {
             GeodesicNextIntersectionResult!double result;
-            assert(tryNextGeodesicIntersection(
-                solver,
-                xlines[i],
-                ylines[i],
-                result));
+            if (!tryNextGeodesicIntersection(
+                    solver,
+                    xlines[i],
+                    ylines[i],
+                    result))
+            {
+                stderr.writefln(
+                    "ERROR: tryNextGeodesicIntersection failed for case %s",
+                    cases[i].name);
+                return 2;
+            }
 
             checksum +=
                 result.distanceOnFirst * 1e-12
@@ -83,11 +89,17 @@ void main()
         foreach (i;0..count)
         {
             GeodesicNextIntersectionResult!double result;
-            assert(tryNextGeodesicIntersection(
-                solver,
-                xlines[i],
-                ylines[i],
-                result));
+            if (!tryNextGeodesicIntersection(
+                    solver,
+                    xlines[i],
+                    ylines[i],
+                    result))
+            {
+                stderr.writefln(
+                    "ERROR: tryNextGeodesicIntersection failed for case %s",
+                    cases[i].name);
+                return 2;
+            }
 
             checksum +=
                 result.distanceOnFirst * 1e-12
@@ -105,4 +117,5 @@ void main()
         cast(double) elapsed.total!"nsecs"
             / cast(double) operations);
     writefln("checksum=%.12f",checksum);
+    return 0;
 }
