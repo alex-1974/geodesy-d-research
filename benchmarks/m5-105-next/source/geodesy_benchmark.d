@@ -25,6 +25,16 @@ int main()
         Geodesic!double.fromEllipsoid(
             wgs84!double());
 
+    GeodesicIntersectionSolver!double intersector;
+
+    if (!GeodesicIntersectionSolver!double.tryFromGeodesic(
+            solver,
+            intersector))
+    {
+        stderr.writefln("ERROR: failed to prepare intersection solver");
+        return 1;
+    }
+
     enum size_t count = 8;
 
     Case[count] cases = [
@@ -68,7 +78,7 @@ int main()
         {
             GeodesicNextIntersectionResult!double result;
             if (!tryNextGeodesicIntersection(
-                    solver,
+                    intersector,
                     xlines[i],
                     ylines[i],
                     result))
@@ -109,7 +119,7 @@ int main()
             GeodesicNextIntersectionResult!double result;
 
             if (!tryNextGeodesicIntersection(
-                    solver,
+                    intersector,
                     xlines[i],
                     ylines[i],
                     result))
@@ -149,6 +159,39 @@ int main()
             caseChecksum);
     }
 
+    double coldChecksum = 0.0;
+    const coldStart = MonoTime.currTime;
+
+    foreach (_;0..rounds)
+        foreach (i;0..count)
+        {
+            GeodesicNextIntersectionResult!double result;
+
+            if (!tryNextGeodesicIntersection(
+                    solver,
+                    xlines[i],
+                    ylines[i],
+                    result))
+            {
+                stderr.writefln(
+                    "ERROR: cold tryNextGeodesicIntersection failed for case %s",
+                    cases[i].name);
+                return 6;
+            }
+
+            coldChecksum +=
+                result.distanceOnFirst * 1e-12
+                + result.distanceOnSecond * 1e-12;
+        }
+
+    const coldElapsed = MonoTime.currTime - coldStart;
+
+    writefln(
+        "cold_ns_per_op=%.6f",
+        cast(double) coldElapsed.total!"nsecs"
+            / cast(double) (rounds * count));
+    writefln("cold_checksum=%.12f", coldChecksum);
+
     const start = MonoTime.currTime;
 
     foreach (_;0..rounds)
@@ -156,7 +199,7 @@ int main()
         {
             GeodesicNextIntersectionResult!double result;
             if (!tryNextGeodesicIntersection(
-                    solver,
+                    intersector,
                     xlines[i],
                     ylines[i],
                     result))
