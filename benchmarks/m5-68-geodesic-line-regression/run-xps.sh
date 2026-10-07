@@ -8,7 +8,7 @@ root="$(
 
 geodesy_repo="${GEODESY_D_REPO:-$root/../geodesy-d}"
 baseline_sha="${M5_68_BASELINE_SHA:-0d4da128bae12220cf6ea27391fadb3305a532bb}"
-candidate_sha="${M5_68_CANDIDATE_SHA:-2219dc5570c5d8480daadc6c7d09c9e64048a772}"
+candidate_sha="${M5_68_CANDIDATE_SHA:-87771bde34a1cefed66634d8b4019f30e85ba561}"
 
 [[ -d "$geodesy_repo/.git" ]] || {
     echo "error: geodesy-d checkout not found at $geodesy_repo" >&2
