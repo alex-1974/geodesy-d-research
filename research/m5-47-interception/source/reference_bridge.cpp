@@ -134,11 +134,11 @@ int m5_47_reference(
         double nearestLon = centerLon;
         int klass = 0;
 
-        if (along < 0.0) {
+        if (along <= 0.0) {
             nearestLat = latAd;
             nearestLon = lonAd;
             klass = 1;
-        } else if (along > sAB) {
+        } else if (along >= sAB) {
             nearestLat = latBd;
             nearestLon = lonBd;
             klass = 2;
