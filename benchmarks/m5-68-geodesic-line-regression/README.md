@@ -49,3 +49,33 @@ traversal.
 
 A default 3% noise budget is used only as an automated regression alarm. The
 reported raw medians and percentage difference remain the evidence.
+
+
+## One-command XPS qualification
+
+With the normal sibling checkouts
+
+~~~text
+libs/geodesy-d
+libs/geodesy-d-research
+~~~
+
+run from `geodesy-d-research`:
+
+~~~bash
+DC=ldc2 \
+M5_68_CPU=2 \
+M5_68_RUNS=12 \
+bash benchmarks/m5-68-geodesic-line-regression/run-xps.sh
+~~~
+
+The wrapper fetches the production repository, creates detached temporary
+worktrees at the exact baseline/candidate SHAs above, runs the controlled
+comparison, and removes the worktrees afterwards.
+
+Override the production checkout only when necessary:
+
+~~~bash
+GEODESY_D_REPO=/path/to/geodesy-d \
+bash benchmarks/m5-68-geodesic-line-regression/run-xps.sh
+~~~
