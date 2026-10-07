@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           repository: alex-1974/geodesy-d
-          ref: feature/m5-geodesic-segment-intersection
+          ref: b3905e4cbe39c9f7359dfd79553566acb4d454fa
           path: geodesy-d
           persist-credentials: false
       - uses: actions/checkout@v6
