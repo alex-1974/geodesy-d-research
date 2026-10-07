@@ -21,3 +21,14 @@ M5_103_CPU=2 \
 M5_103_RUNS=12 \
 bash benchmarks/m5-103-intersection/run.sh
 ~~~
+
+
+## Current qualified candidate
+
+~~~text
+b3905e4cbe39c9f7359dfd79553566acb4d454fa
+~~~
+
+This candidate adds a one-sided triangle-inequality rejection after the
+midpoint solve. It can only prove `none` early; all other cases retain the
+existing conservative corner fallback.
