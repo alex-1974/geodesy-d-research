@@ -3,7 +3,7 @@ module m5_47_interception_validation;
 import geodesy;
 
 import std.math : PI, abs, atan, atan2, cos, hypot, sin, sqrt;
-import std.stdio : writefln, writeln;
+import std.stdio : stderr;
 
 extern(C)
 int m5_47_reference(
@@ -287,7 +287,7 @@ void main()
         ProbeResult actual;
         if (!solveProbe(solver, a, b, c, actual))
         {
-            writefln("FAIL %-18s D solver failed", item.name);
+            stderr.writefln("FAIL %-18s D solver failed", item.name);
             ++failures;
             continue;
         }
@@ -317,7 +317,7 @@ void main()
 
         if (!ok)
         {
-            writefln("FAIL %-18s reference failed", item.name);
+            stderr.writefln("FAIL %-18s reference failed", item.name);
             ++failures;
             continue;
         }
@@ -379,7 +379,7 @@ void main()
             && actual.segmentClass == rClass
             && geometricCheck;
 
-        writefln(
+        stderr.writefln(
             "%s %-18s foot=(%.2e,%.2e) along=%.3e cross=%.3e "
             ~ "segment=(%.2e,%.2e,%.3e) class=%s",
             pass ? "PASS" : "FAIL",
@@ -399,9 +399,10 @@ void main()
 
     if (failures)
     {
-        writefln("M5 #47 INTERCEPTION PROBE FAIL: %s case(s)", failures);
-        assert(0);
+        stderr.writefln("M5 #47 INTERCEPTION PROBE FAIL: %s case(s)", failures);
+        import core.stdc.stdlib : exit;
+        exit(1);
     }
 
-    writeln("M5 #47 INTERCEPTION PROBE PASS");
+    stderr.writeln("M5 #47 INTERCEPTION PROBE PASS");
 }
