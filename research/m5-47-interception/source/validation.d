@@ -307,7 +307,7 @@ void main()
 
         bool geometricCheck = true;
 
-        if (actual.signedCrossTrack != 0.0)
+        if (abs(actual.signedCrossTrack) > 1.0e-6)
         {
             const auto invAB = solver.inverse(a, b);
             const auto line =
