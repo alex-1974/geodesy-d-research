@@ -26,6 +26,24 @@ int geodesic_line_reference_general_position(
     double* azimuth2Radians);
 
 
+extern(C)
+int geodesic_line_reference_quantities(
+    double a,
+    double f,
+    double latitude1Radians,
+    double longitude1Radians,
+    double azimuth1Radians,
+    int arcMode,
+    double input,
+    double* latitude2Radians,
+    double* longitude2Radians,
+    double* azimuth2Radians,
+    double* reducedLength,
+    double* scale12,
+    double* scale21,
+    double* signedArea);
+
+
 struct Case
 {
     const(char)[] name;
@@ -254,6 +272,254 @@ void check(
 }
 
 
+void checkQuantities(
+    const Case item,
+    ref size_t failures)
+{
+    const ellipsoid =
+        item.f == 0.0
+            ? Ellipsoid!double.sphere(item.a)
+            : Ellipsoid!double.fromFlattening(
+                item.a,
+                item.f);
+
+    const solver =
+        Geodesic!double.fromEllipsoid(
+            ellipsoid);
+
+    const start =
+        GeographicCoordinate!double.fromComponents(
+            Latitude!double.fromRadians(
+                item.latitude1),
+            Longitude!double.fromRadians(
+                item.longitude1));
+
+    const line =
+        GeodesicLine!double.fromGeodesic(
+            solver,
+            start,
+            Angle!double.fromRadians(
+                item.azimuth1));
+
+    enum double angularTolerance = 8.0e-13;
+    enum double scaleTolerance = 3.0e-13;
+
+    foreach (arc; item.arcs)
+    {
+        double refLat;
+        double refLon;
+        double refAzi;
+        double refM12;
+        double refScale12;
+        double refScale21;
+        double refArea;
+
+        const ok =
+            geodesic_line_reference_quantities(
+                item.a,
+                item.f,
+                item.latitude1,
+                item.longitude1,
+                item.azimuth1,
+                1,
+                arc,
+                &refLat,
+                &refLon,
+                &refAzi,
+                &refM12,
+                &refScale12,
+                &refScale21,
+                &refArea);
+
+        assert(ok != 0);
+
+        GeodesicDirectResult!double actual;
+        GeodesicQuantities!double quantities;
+
+        assert(
+            line.tryArcPosition(
+                Angle!double.fromRadians(arc),
+                actual,
+                quantities));
+
+        const latError =
+            fabs(actual.position.latitude.radians - refLat);
+
+        const lonError =
+            angularError(
+                actual.position.longitude.radians,
+                refLon);
+
+        const aziError =
+            angularError(
+                actual.finalAzimuth.radians,
+                refAzi);
+
+        const m12Error =
+            fabs(
+                quantities.reducedLength
+                - refM12);
+
+        const scale12Error =
+            fabs(
+                quantities.scale12
+                - refScale12);
+
+        const scale21Error =
+            fabs(
+                quantities.scale21
+                - refScale21);
+
+        const areaError =
+            fabs(
+                quantities.signedArea
+                - refArea);
+
+        const m12Tolerance =
+            2.0e-6
+            + fabs(refM12) * 2.0e-13;
+
+        const areaTolerance =
+            0.25
+            + fabs(refArea) * 5.0e-14;
+
+        const pass =
+            latError <= angularTolerance
+            && lonError <= angularTolerance
+            && aziError <= angularTolerance
+            && m12Error <= m12Tolerance
+            && scale12Error <= scaleTolerance
+            && scale21Error <= scaleTolerance
+            && areaError <= areaTolerance;
+
+        writefln(
+            "%s %-22s arc quantities=% .6f "
+            ~ "lat=% .3e lon=% .3e azi=% .3e "
+            ~ "m12=% .3e M12=% .3e M21=% .3e S12=% .3e",
+            pass ? "PASS" : "FAIL",
+            item.name,
+            arc,
+            latError,
+            lonError,
+            aziError,
+            m12Error,
+            scale12Error,
+            scale21Error,
+            areaError);
+
+        if (!pass)
+            ++failures;
+    }
+
+    foreach (distance; item.distances)
+    {
+        double refLat;
+        double refLon;
+        double refAzi;
+        double refM12;
+        double refScale12;
+        double refScale21;
+        double refArea;
+
+        const ok =
+            geodesic_line_reference_quantities(
+                item.a,
+                item.f,
+                item.latitude1,
+                item.longitude1,
+                item.azimuth1,
+                0,
+                distance,
+                &refLat,
+                &refLon,
+                &refAzi,
+                &refM12,
+                &refScale12,
+                &refScale21,
+                &refArea);
+
+        assert(ok != 0);
+
+        GeodesicDirectResult!double actual;
+        GeodesicQuantities!double quantities;
+
+        assert(
+            line.tryPosition(
+                distance,
+                actual,
+                quantities));
+
+        const latError =
+            fabs(actual.position.latitude.radians - refLat);
+
+        const lonError =
+            angularError(
+                actual.position.longitude.radians,
+                refLon);
+
+        const aziError =
+            angularError(
+                actual.finalAzimuth.radians,
+                refAzi);
+
+        const m12Error =
+            fabs(
+                quantities.reducedLength
+                - refM12);
+
+        const scale12Error =
+            fabs(
+                quantities.scale12
+                - refScale12);
+
+        const scale21Error =
+            fabs(
+                quantities.scale21
+                - refScale21);
+
+        const areaError =
+            fabs(
+                quantities.signedArea
+                - refArea);
+
+        const m12Tolerance =
+            2.0e-6
+            + fabs(refM12) * 2.0e-13;
+
+        const areaTolerance =
+            0.25
+            + fabs(refArea) * 5.0e-14;
+
+        const pass =
+            latError <= angularTolerance
+            && lonError <= angularTolerance
+            && aziError <= angularTolerance
+            && m12Error <= m12Tolerance
+            && scale12Error <= scaleTolerance
+            && scale21Error <= scaleTolerance
+            && areaError <= areaTolerance;
+
+        writefln(
+            "%s %-22s dist quantities=% .3f "
+            ~ "lat=% .3e lon=% .3e azi=% .3e "
+            ~ "m12=% .3e M12=% .3e M21=% .3e S12=% .3e",
+            pass ? "PASS" : "FAIL",
+            item.name,
+            distance,
+            latError,
+            lonError,
+            aziError,
+            m12Error,
+            scale12Error,
+            scale21Error,
+            areaError);
+
+        if (!pass)
+            ++failures;
+    }
+}
+
+
 void main()
 {
     enum double d2r =
@@ -357,17 +623,20 @@ void main()
     size_t failures = 0;
 
     foreach (const ref item; cases)
+    {
         check(item, failures);
+        checkQuantities(item, failures);
+    }
 
     if (failures != 0)
     {
         writefln(
-            "M5 #68 ARC/UNROLL VALIDATION FAIL: %s result(s)",
+            "M5 #68 ADVANCED LINE VALIDATION FAIL: %s result(s)",
             failures);
 
         assert(0);
     }
 
     writeln(
-        "M5 #68 ARC/UNROLL VALIDATION PASS");
+        "M5 #68 ADVANCED LINE VALIDATION PASS");
 }
