@@ -250,7 +250,16 @@ void main()
         Case("coincident disjoint",0,-10,0,-5,0,5,0,10),
         Case("antimeridian",0,170,0,-170,-10,180,10,180),
         Case("oblique",35,-20,55,30,50,-15,30,25),
-        Case("near parallel",10,-30,10,30,10.1,-30,10.1,30)
+        Case("near parallel",10,-30,10,30,10.1,-30,10.1,30),
+        Case("tiny angle cross",0,-40,0,40,-0.001,-40,0.001,40),
+        Case("near start cross",0,0,0,20,-10,0.000001,10,0.000001),
+        Case("near end cross",0,0,0,20,-10,19.999999,10,19.999999),
+        Case("polar cross",84,-60,84,60,82,0,89,0),
+        Case("long oblique", -55,-150,55,20,50,-120,-45,50),
+        Case("reversed first",0,10,0,-10,-10,0,10,0),
+        Case("reversed second",0,-10,0,10,10,0,-10,0),
+        Case("almost coincident none",0,-20,0,20,0.000001,-20,0.000001,20),
+        Case("near anti long",5,-170,-5,5,-40,-80,40,100)
     ];
 
     size_t failures=0;
