@@ -192,12 +192,12 @@ bool solveProbe(
 
     GeographicCoordinate!double nearest = center;
     int klass = 0;
-    if (along < 0.0)
+    if (along <= 0.0)
     {
         nearest = a;
         klass = 1;
     }
-    else if (along > invAB.distance)
+    else if (along >= invAB.distance)
     {
         nearest = b;
         klass = 2;
@@ -235,6 +235,9 @@ void main()
         Case("after end", 48.0, 10.0, 48.0, 12.0, 47.7, 14.0),
         Case("antimeridian", 15.0, 175.0, 18.0, -175.0, 20.0, 179.0),
         Case("near equator", 0.0, -20.0, 0.0, 20.0, -2.0, 3.0),
+        Case("on track", 0.0, -20.0, 0.0, 20.0, 0.0, 3.0),
+        Case("at start", 10.0, 10.0, 12.0, 20.0, 10.0, 10.0),
+        Case("reversed track", 42.0, -60.0, 40.0, -75.0, 38.0, -66.0),
     ];
 
     size_t failures = 0;
@@ -302,6 +305,39 @@ void main()
         const double segDistErr =
             abs(actual.segmentNearestDistance - rSegDistance);
 
+        bool geometricCheck = true;
+
+        if (actual.signedCrossTrack != 0.0)
+        {
+            const auto invAB = solver.inverse(a, b);
+            const auto line =
+                GeodesicLine!double.fromGeodesic(
+                    solver, a, invAB.initialAzimuth);
+            const auto lineAtFoot =
+                line.position(actual.alongTrack);
+            const auto invFootTarget =
+                solver.inverse(actual.foot, c);
+            const double rightAngleError =
+                abs(
+                    abs(
+                        wrapPi(
+                            invFootTarget.initialAzimuth.radians
+                                - lineAtFoot.finalAzimuth.radians))
+                        - cast(double) PI / 2.0);
+            geometricCheck =
+                rightAngleError < 3e-10;
+        }
+
+        if (actual.segmentClass == 0)
+        {
+            geometricCheck =
+                geometricCheck
+                && abs(
+                    actual.segmentNearestDistance
+                        - abs(actual.signedCrossTrack))
+                    < 2e-5;
+        }
+
         const bool pass =
             footLatErr < 2e-12
             && footLonErr < 2e-12
@@ -310,7 +346,8 @@ void main()
             && segLatErr < 2e-12
             && segLonErr < 2e-12
             && segDistErr < 2e-5
-            && actual.segmentClass == rClass;
+            && actual.segmentClass == rClass
+            && geometricCheck;
 
         writefln(
             "%s %-18s foot=(%.2e,%.2e) along=%.3e cross=%.3e "
