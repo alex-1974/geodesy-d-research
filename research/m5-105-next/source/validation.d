@@ -681,6 +681,9 @@ void main()
         Case("coincident reverse",false,false,0,0,90,-90),
         Case("sphere ordinary",true,false,0,0,30,120),
         Case("sphere near parallel",true,true,15,-30,60,60.1),
+        Case("sphere symmetric cross",true,true,0,0,45,135),
+        Case("sphere meridian/equator",true,true,0,0,0,90),
+        Case("wgs84 almost symmetric",false,false,0.0001,0,45,135),
         Case("sphere coincident",true,false,0,0,90,90)
     ];
 
