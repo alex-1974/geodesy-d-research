@@ -54,7 +54,7 @@ private void report(T, W)(const char* publicName, const char* workingName)
 
     printf(
         "%s/%s base=%zu advanced_additions=%zu advanced=%zu unified=%zu "
-        "growth=%zu growth_pct=%.2f\n",
+        ~ "growth=%zu growth_pct=%.2f\n",
         publicName,
         workingName,
         Base.sizeof,
