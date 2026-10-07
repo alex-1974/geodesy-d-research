@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           repository: alex-1974/geodesy-d
-          ref: research/m5-intersection-prepared-state
+          ref: a6f9eaaae7de442dcefc5f523a7a9421656494d2
           path: geodesy-d
           persist-credentials: false
       - uses: actions/checkout@v6
