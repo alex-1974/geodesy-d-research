@@ -112,3 +112,59 @@ The probe reports production and modeled object sizes for float/double/real.
   and in which direction the geodesic encircles the ellipsoid.
 - The research intentionally does not copy GeographicLib's public runtime
   capability-mask API. D compile-time specialization is preferred.
+
+
+## CI layout evidence
+
+Qualified against production `geodesy-d` develop commit:
+
+~~~text
+0d4da128bae12220cf6ea27391fadb3305a532bb
+~~~
+
+The DMD 2.111.0 and LDC 1.41.0 lanes produced identical layouts:
+
+| public/working scalar | current line | modeled advanced additions | unified line | growth |
+| --- | ---: | ---: | ---: | ---: |
+| float / double | 288 B | 240 B | 528 B | +83.33% |
+| double / double | 296 B | 240 B | 536 B | +81.08% |
+| real / real | 592 B | 480 B | 1072 B | +81.08% |
+
+The first DMD run also exposed the expected DMD 2.111 rule forbidding implicit
+adjacent string-literal concatenation. The probe was corrected to use explicit
+`~`; this is probe/toolchain evidence, not a production geodesic defect.
+
+## Architecture conclusion
+
+**Reject alternative A: do not expand every ordinary `GeodesicLine!T` with
+fully prepared advanced state.**
+
+An approximately 81% object-size increase is too large for a capability that
+existing distance-position consumers do not request.
+
+Further inspection of the current production state shows that the basic line
+already contains enough information to derive the scalar state needed by
+advanced quantities:
+
+- `f = 1 - f1`;
+- `a = b / f1`;
+- `e2 = f (2 - f)`;
+- `ep2 = e2 / f1^2`;
+- `eps` from `cos(alpha0)^2 * ep2`;
+- beta1 and alpha1 from the stored sigma1/alpha0 state.
+
+Therefore the production experiment should use this order:
+
+1. refactor a shared internal position kernel parameterized by `sigma12`;
+2. add arc-mode position with **zero line-layout growth**;
+3. add unrolled-longitude output with **zero line-layout growth**;
+4. expose advanced quantities from the existing line by deriving/rebuilding
+   C2/C4 state only when that overload is selected;
+5. benchmark that on-demand advanced path;
+6. introduce an internal compile-time specialized prepared advanced state for
+   #47/#46 only if repeated solver profiling proves the extra preparation
+   materially useful.
+
+This keeps the existing public line lean and uses D compile-time specialization
+where it produces evidence-backed value rather than copying a reference
+library's runtime capability mask.
