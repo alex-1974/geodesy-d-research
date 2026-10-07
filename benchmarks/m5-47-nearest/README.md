@@ -36,3 +36,22 @@ C++ is compiled with:
 
 The reported ratio is descriptive evidence. Any substantial gap should be
 profiled before accepting #47; it must not be hidden by relaxing a threshold.
+
+
+## Candidate tracking
+
+Initial hosted smoke candidate:
+
+~~~text
+81bde154cb4b19cc2d34590e9f84f4762d01689a
+~~~
+
+Initial one-run smoke ratio was 1.163899 (geodesy-d ~16.39% slower). That result
+is diagnostic only and motivated removal of two unnecessary endpoint-detection
+inverse solves.
+
+Current production candidate:
+
+~~~text
+73993a87526caf1232ad99b933ddd609dd5d80e6
+~~~
