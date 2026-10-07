@@ -21,6 +21,6 @@ binary="$tmp/m5-68-validation"
 
 "$cxx"     -O2     -std=c++17     -I"$geographiclib_root/include"     -c "$bridge"     -o "$bridge_o"
 
-"$dc"     -release     -O2     -i     -I"$geodesy_repo/source"     "$probe"     "$bridge_o"     -L-L"$geographiclib_root/lib"     -L-lGeographicLib     -L-lstdc++     -of="$binary"
+"$dc"     -release     -O     -i     -I"$geodesy_repo/source"     "$probe"     "$bridge_o"     -L-L"$geographiclib_root/lib"     -L-lGeographicLib     -L-lstdc++     -of="$binary"
 
-LD_LIBRARY_PATH="$geographiclib_root:${LD_LIBRARY_PATH:-}" LD_LIBRARY_PATH="$geographiclib_root/lib:${LD_LIBRARY_PATH:-}"     stdbuf -oL -eL "$binary"
+LD_LIBRARY_PATH="$geographiclib_root/lib:${LD_LIBRARY_PATH:-}"     stdbuf -oL -eL "$binary"
