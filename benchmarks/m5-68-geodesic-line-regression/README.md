@@ -23,7 +23,7 @@ For the current qualification:
 
 ~~~text
 baseline  0d4da128bae12220cf6ea27391fadb3305a532bb
-candidate 2219dc5570c5d8480daadc6c7d09c9e64048a772
+candidate 87771bde34a1cefed66634d8b4019f30e85ba561
 ~~~
 
 ## Controlled XPS run
