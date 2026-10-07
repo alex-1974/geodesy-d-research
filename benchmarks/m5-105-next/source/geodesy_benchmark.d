@@ -3,6 +3,7 @@ module m5_105_next_benchmark;
 import geodesy;
 
 import core.time : MonoTime;
+import std.math : isFinite;
 import std.stdio : stderr, writefln;
 
 private struct Case
@@ -78,10 +79,75 @@ int main()
                 return 2;
             }
 
+            if (!isFinite(result.distanceOnFirst)
+                || !isFinite(result.distanceOnSecond)
+                || !isFinite(result.displacementDistance))
+            {
+                stderr.writefln(
+                    "ERROR: non-finite result for case %s: x=%s y=%s rank=%s coincidence=%s",
+                    cases[i].name,
+                    result.distanceOnFirst,
+                    result.distanceOnSecond,
+                    result.displacementDistance,
+                    result.coincidence);
+                return 3;
+            }
+
             checksum +=
                 result.distanceOnFirst * 1e-12
                 + result.distanceOnSecond * 1e-12;
         }
+
+    foreach (i; 0 .. count)
+    {
+        enum size_t diagnosticRounds = 32;
+        double caseChecksum;
+        const caseStart = MonoTime.currTime;
+
+        foreach (_; 0 .. diagnosticRounds)
+        {
+            GeodesicNextIntersectionResult!double result;
+
+            if (!tryNextGeodesicIntersection(
+                    solver,
+                    xlines[i],
+                    ylines[i],
+                    result))
+            {
+                stderr.writefln(
+                    "ERROR: diagnostic call failed for case %s",
+                    cases[i].name);
+                return 4;
+            }
+
+            if (!isFinite(result.distanceOnFirst)
+                || !isFinite(result.distanceOnSecond)
+                || !isFinite(result.displacementDistance))
+            {
+                stderr.writefln(
+                    "ERROR: diagnostic non-finite result for case %s: x=%s y=%s rank=%s coincidence=%s",
+                    cases[i].name,
+                    result.distanceOnFirst,
+                    result.distanceOnSecond,
+                    result.displacementDistance,
+                    result.coincidence);
+                return 5;
+            }
+
+            caseChecksum +=
+                result.distanceOnFirst * 1e-12
+                + result.distanceOnSecond * 1e-12;
+        }
+
+        const caseElapsed = MonoTime.currTime - caseStart;
+
+        writefln(
+            "case_ns_per_op.%s=%.6f checksum=%.12f",
+            cases[i].name,
+            cast(double) caseElapsed.total!"nsecs"
+                / cast(double) diagnosticRounds,
+            caseChecksum);
+    }
 
     const start = MonoTime.currTime;
 
@@ -99,6 +165,20 @@ int main()
                     "ERROR: tryNextGeodesicIntersection failed for case %s",
                     cases[i].name);
                 return 2;
+            }
+
+            if (!isFinite(result.distanceOnFirst)
+                || !isFinite(result.distanceOnSecond)
+                || !isFinite(result.displacementDistance))
+            {
+                stderr.writefln(
+                    "ERROR: non-finite result for case %s: x=%s y=%s rank=%s coincidence=%s",
+                    cases[i].name,
+                    result.distanceOnFirst,
+                    result.distanceOnSecond,
+                    result.displacementDistance,
+                    result.coincidence);
+                return 3;
             }
 
             checksum +=
