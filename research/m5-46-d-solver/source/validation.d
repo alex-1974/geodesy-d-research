@@ -222,6 +222,15 @@ private double coordError(
     return dlat>dlon?dlat:dlon;
 }
 
+private GeographicCoordinate!double gc(
+    const double lat,
+    const double lon)
+{
+    return GeographicCoordinate!double.fromComponents(
+        Latitude!double.fromDegrees(lat),
+        Longitude!double.fromDegrees(lon));
+}
+
 private struct Case
 {
     string name;
@@ -247,11 +256,6 @@ void main()
     size_t failures=0;
     foreach(tc;cases)
     {
-        auto gc(double lat,double lon)=
-            GeographicCoordinate!double.fromComponents(
-                Latitude!double.fromDegrees(lat),
-                Longitude!double.fromDegrees(lon));
-
         const a0=gc(tc.a1lat,tc.a1lon), a1=gc(tc.a2lat,tc.a2lon);
         const b0=gc(tc.b1lat,tc.b1lon), b1=gc(tc.b2lat,tc.b2lon);
 
