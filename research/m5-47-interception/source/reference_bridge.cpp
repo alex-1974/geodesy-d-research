@@ -45,6 +45,13 @@ int m5_47_reference(
     try {
         GeographicLib::Geodesic geod(a, f);
 
+        const double latAd = latA * degreePerRadian;
+        const double lonAd = lonA * degreePerRadian;
+        const double latBd = latB * degreePerRadian;
+        const double lonBd = lonB * degreePerRadian;
+        const double latCd = latC * degreePerRadian;
+        const double lonCd = lonC * degreePerRadian;
+
         double sAB, aziAB1, aziAB2;
         geod.Inverse(latAd, lonAd, latBd, lonBd, sAB, aziAB1, aziAB2);
         if (!(sAB > 0.0) || !std::isfinite(sAB))
@@ -78,13 +85,6 @@ int m5_47_reference(
             return 1;
         }
         GeographicLib::Gnomonic gnom(geod);
-
-        const double latAd = latA * degreePerRadian;
-        const double lonAd = lonA * degreePerRadian;
-        const double latBd = latB * degreePerRadian;
-        const double lonBd = lonB * degreePerRadian;
-        const double latCd = latC * degreePerRadian;
-        const double lonCd = lonC * degreePerRadian;
 
         double centerLat = latCd;
         double centerLon = lonCd;
