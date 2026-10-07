@@ -1,0 +1,38 @@
+name: M5 #46 segment intersection research
+
+on:
+  pull_request:
+    paths:
+      - "research/m5-46-segment-intersection/**"
+      - ".github/workflows/m5-46-segment-intersection.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  semantics:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Checkout GeographicLib 2.7
+        uses: actions/checkout@v6
+        with:
+          repository: geographiclib/geographiclib
+          ref: v2.7
+          path: geographiclib
+          persist-credentials: false
+
+      - name: Build GeographicLib 2.7
+        shell: bash
+        run: |
+          cmake -S geographiclib -B geographiclib-build             -DCMAKE_BUILD_TYPE=Release             -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/geographiclib-2.7"             -DBUILD_SHARED_LIBS=ON
+          cmake --build geographiclib-build --parallel 2
+          cmake --install geographiclib-build
+
+      - name: Run bounded-segment semantics probe
+        env:
+          GEOGRAPHICLIB_ROOT: ${{ runner.temp }}/geographiclib-2.7
+          CXX: g++
+        run: bash research/m5-46-segment-intersection/run.sh
