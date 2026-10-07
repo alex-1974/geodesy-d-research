@@ -50,6 +50,72 @@ private double wrapPi(double value)
     return value;
 }
 
+private double twoSum(
+    const double u,
+    const double v,
+    out double error)
+{
+    const double s = u + v;
+    const double up = s - v;
+    const double vpp = s - up;
+    const double du = up - u;
+    const double dv = vpp - v;
+    error = s != 0.0 ? -(du + dv) : s;
+    return s;
+}
+
+private double angleDiff(
+    const double x,
+    const double y,
+    out double error)
+{
+    const double period = 2.0 * cast(double) PI;
+
+    double d =
+        twoSum(
+            (-x) % period,
+            y % period,
+            error);
+
+    double correction;
+    d =
+        twoSum(
+            d % period,
+            error,
+            correction);
+
+    error = correction;
+
+    if (d > cast(double) PI)
+        d -= period;
+    else if (d < -cast(double) PI)
+        d += period;
+
+    if (d == 0.0 || abs(d) == cast(double) PI)
+        d = copysign(
+            d,
+            error == 0.0
+                ? y - x
+                : -error);
+
+    return d;
+}
+
+private void sinCosCorrected(
+    const double angle,
+    const double correction,
+    out double sine,
+    out double cosine)
+{
+    const double s = sin(angle);
+    const double c = cos(angle);
+    const double se = sin(correction);
+    const double ce = cos(correction);
+
+    sine = s * ce + c * se;
+    cosine = c * ce - s * se;
+}
+
 private double l1(const P a, const P b)
 {
     return abs(a.x - b.x) + abs(a.y - b.y);
@@ -104,25 +170,50 @@ private bool basic(
         const double sinz = sin(zr);
         const double cosz = cos(zr);
 
+        double errorX;
+        double errorY;
+
         const double X =
-            wrapPi(
-                inv.initialAzimuth.radians
-                - px.finalAzimuth.radians);
+            angleDiff(
+                px.finalAzimuth.radians,
+                inv.initialAzimuth.radians,
+                errorX);
 
         const double Y =
-            wrapPi(
-                inv.finalAzimuth.radians
-                - py.finalAzimuth.radians);
+            angleDiff(
+                py.finalAzimuth.radians,
+                inv.finalAzimuth.radians,
+                errorY);
+
+        double errorXY;
+
+        const double XY =
+            angleDiff(
+                X,
+                Y,
+                errorXY);
 
         const double sign =
             copysign(
                 1.0,
-                wrapPi(Y - X));
+                XY + errorXY + errorY - errorX);
 
-        const double sinX = sin(sign * X);
-        const double cosX = cos(sign * X);
-        const double sinY = sin(sign * Y);
-        const double cosY = cos(sign * Y);
+        double sinX;
+        double cosX;
+        double sinY;
+        double cosY;
+
+        sinCosCorrected(
+            sign * X,
+            sign * errorX,
+            sinX,
+            cosX);
+
+        sinCosCorrected(
+            sign * Y,
+            sign * errorY,
+            sinY,
+            cosY);
 
         double dx;
         double dy;
