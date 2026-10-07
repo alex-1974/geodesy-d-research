@@ -457,7 +457,14 @@ void main()
         Case("coincident same",false,0,0,90,0,10,90,1.0e6,-2.0e6),
         Case("coincident reverse",false,0,0,90,0,10,-90,-2.0e6,1.0e6),
         Case("sphere ordinary",true,0,-20,45,10,20,-60,0,0),
-        Case("sphere offset",true,25,-40,70,-10,80,-20,3.0e6,2.0e6)
+        Case("sphere offset",true,25,-40,70,-10,80,-20,3.0e6,2.0e6),
+        Case("large offset",false,-20,-120,30,35,80,-110,1.5e7,-1.1e7),
+        Case("reverse x",false,0,-20,225,10,20,-60,0,0),
+        Case("reverse y",false,0,-20,45,10,20,120,0,0),
+        Case("near coincident",false,5,-40,80,5.00001,-40.00001,80.00001,0,0),
+        Case("coincident same shifted",false,0,0,90,0,10,90,8.0e6,3.0e6),
+        Case("coincident reverse shifted",false,0,0,90,0,10,-90,8.0e6,-3.0e6),
+        Case("polar offset",false,88,-160,40,86,30,-100,-6.0e6,4.0e6)
     ];
 
     size_t failures = 0;
