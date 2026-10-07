@@ -22,7 +22,9 @@ median_file() {
 }
 
 run_one() {
-  local label="$1" binary="$2" values="$tmp/$label.values"
+  local label="$1"
+  local binary="$2"
+  local values="$tmp/$label.values"
   : > "$values"
   echo "=== $label ==="
   for ((i=1;i<=runs;++i)); do
