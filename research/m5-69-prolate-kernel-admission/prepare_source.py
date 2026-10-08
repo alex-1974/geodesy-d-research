@@ -40,6 +40,12 @@ text = geodesic.read_text()
 replacements = {
     "&& _f >= cast(W) 0\n            && _f <= cast(W) 0.01":
         "&& _f >= cast(W) -0.01\n            && _f <= cast(W) 0.01",
+    "&& _e2 >= cast(W) 0":
+        "&& _e2 > cast(W) -1",
+    "&& _ep2 >= cast(W) 0":
+        "&& _ep2 > cast(W) -1",
+    "&& _n >= cast(W) 0;":
+        "&& _n > cast(W) -1;",
     "|| ellipsoid.flattening > cast(T) 0.01)":
         "|| ellipsoid.flattening < cast(T) -0.01\n            || ellipsoid.flattening > cast(T) 0.01)",
 }
