@@ -1,0 +1,37 @@
+name: M5 #69 prolate family propagation
+
+on:
+  pull_request:
+    paths:
+      - "research/m5-69-prolate-family-propagation/**"
+      - ".github/workflows/m5-69-prolate-family-propagation.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  propagation:
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - dmd-2.111.0
+          - ldc-1.41.0
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: develop
+          path: geodesy-d
+          persist-credentials: false
+      - uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ${{ matrix.compiler }}
+      - name: Run R69.4 propagation baseline
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          DC: ${{ startsWith(matrix.compiler, 'dmd') && 'dmd' || 'ldc2' }}
+        run: bash research/m5-69-prolate-family-propagation/run.sh
