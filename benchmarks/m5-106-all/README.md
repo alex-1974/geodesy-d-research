@@ -65,7 +65,7 @@ Hosted CI is a build/smoke run only.
 Final performance evidence is a CPU-pinned 12-process XPS run:
 
     M5_106_CPU=2 M5_106_RUNS=12 M5_106_ROUNDS=8 \
-      bash benchmarks/m5-106-all/run.sh
+      bash benchmarks/m5-106-all/run-xps.sh
 
 Release flags:
 
@@ -105,3 +105,8 @@ Observed D scaling shapes:
 The shared-runner sample is only a smoke result. It is useful for confirming
 the benchmark shape and that no obvious performance regression exists; the
 final R106.5 claim requires the documented 12-process CPU-pinned XPS run.
+
+
+The XPS wrapper records host, kernel, CPU model, compiler versions, research
+and production commit IDs, affinity, run count, and the complete benchmark
+output under `benchmarks/m5-106-all/evidence/`.
