@@ -26,7 +26,7 @@ int main(string[] args)
 
     if(!solver.isValid) return 3;
 
-    double checksum;
+    double checksum = 0.0;
     const start=MonoTime.currTime;
 
     if(mode=="direct")
