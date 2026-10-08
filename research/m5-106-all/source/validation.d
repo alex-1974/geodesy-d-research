@@ -633,14 +633,12 @@ private bool compareCase(const Case item)
         }
     }
 
-    const double rankTieTolerance = 2e-4;
-
     foreach (i; 1 .. actual.length)
     {
         const double previousRank = l1(actual[i - 1], p0);
         const double currentRank = l1(actual[i], p0);
 
-        if (currentRank + rankTieTolerance < previousRank)
+        if (currentRank < previousRank)
         {
             writefln(
                 "FAIL %-31s rank order %s: %.17g < %.17g",
@@ -648,7 +646,13 @@ private bool compareCase(const Case item)
             return false;
         }
 
-        if (abs(currentRank - previousRank) <= rankTieTolerance)
+        /*
+         * GeographicLib applies x/y only when the binary64 ranks compare
+         * exactly equal. Mathematically tied intersections can acquire
+         * slightly different ranks in an independent implementation, so
+         * near-equality must not be promoted into an artificial tie.
+         */
+        if (currentRank == previousRank)
         {
             const bool xyOrdered =
                 actual[i - 1].x < actual[i].x
@@ -660,7 +664,7 @@ private bool compareCase(const Case item)
             if (!xyOrdered)
             {
                 writefln(
-                    "FAIL %-31s tie order %s",
+                    "FAIL %-31s exact tie order %s",
                     item.name, i);
                 return false;
             }
