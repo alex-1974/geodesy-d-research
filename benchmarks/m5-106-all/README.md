@@ -74,3 +74,34 @@ Release flags:
 
 A performance conclusion should use process medians, not a single hosted
 runner sample.
+
+
+## Hosted smoke evidence
+
+Hosted Ubuntu 24.04 smoke at research head
+\`8a5f28a8a04dee32cbe4b0cee70dd403416d7ec7\`, using LDC 1.41.0,
+GeographicLib 2.7, one process run and one timed round per case:
+
+- geodesy-d exact: **77,643.75 ns/query**
+- GeographicLib: **96,450.56 ns/query**
+- ratio: **0.805011**
+- geodesy-d delta: **-19.4989%**
+- geodesy-d exact: **3,810.74 ns/result**
+- GeographicLib: **4,733.77 ns/result**
+- geodesy-d: **2,588.13 ns/tile**
+- D count-only: **68,481.25 ns/query**
+- D truncated output: **68,637.50 ns/query**
+
+Observed D scaling shapes:
+
+| Geometry | 20 Mm | 40 Mm | 80 Mm | 160 Mm |
+| --- | ---: | ---: | ---: | ---: |
+| ordinary results | 1 | 4 | 16 | 64 |
+| near-parallel results | 1 | 4 | 16 | 56 |
+| symmetric results | 1 | 3 | 15 | 63 |
+| coincident results | 1 | 3 | 15 | 63 |
+| required tiles | 5 | 9 | 25 | 81 |
+
+The shared-runner sample is only a smoke result. It is useful for confirming
+the benchmark shape and that no obvious performance regression exists; the
+final R106.5 claim requires the documented 12-process CPU-pinned XPS run.
