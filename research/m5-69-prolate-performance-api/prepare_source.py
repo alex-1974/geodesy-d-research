@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from pathlib import Path
 import shutil
+import re
 import sys
 
 if len(sys.argv) != 3:
@@ -147,15 +148,22 @@ if old_authalic not in text:
     raise SystemExit("intersection authalic marker missing")
 text = text.replace(old_authalic, new_authalic, 1)
 
-old_spacing = "    t1 = cast(W) PI * a * (cast(W) 1 - f);"
-new_spacing = """    const W meridionalHalf =
-        cast(W) PI * a * (cast(W) 1 - f);
+closest_assignment = re.compile(
+    r"(?m)^(?P<indent>\s*)t1\s*=\s*cast\(W\)\s*PI\s*\*\s*a\s*\*\s*"
+    r"\(cast\(W\)\s*1\s*-\s*f\);\s*$"
+)
 
-    t1 = meridionalHalf;"""
-
-if old_spacing not in text:
+match = closest_assignment.search(text)
+if match is None:
     raise SystemExit("closest spacing assignment missing")
-text = text.replace(old_spacing, new_spacing, 1)
+
+indent = match.group("indent")
+new_spacing = (
+    f"{indent}const W meridionalHalf =\n"
+    f"{indent}    cast(W) PI * a * (cast(W) 1 - f);\n\n"
+    f"{indent}t1 = meridionalHalf;"
+)
+text = closest_assignment.sub(new_spacing, text, count=1)
 
 old_return = """    return tryIntersectionConjugateFromOrigin!T(
         line, tolerance, initial, true, d1);
