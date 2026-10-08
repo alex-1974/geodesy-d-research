@@ -76,9 +76,18 @@ int main()
             start, azi, distance,
             withQuantities, quantities);
 
+    if (!quantitiesOk
+        || !isFinite(quantities.reducedLength)
+        || !isFinite(quantities.scale12)
+        || !isFinite(quantities.scale21)
+        || !isFinite(quantities.signedArea))
+    {
+        stderr.writefln("FAIL advanced quantities propagation");
+        return 7;
+    }
+
     writefln(
-        "STATUS advanced_quantities=%s signed_area=%s",
-        quantitiesOk ? "pass" : "blocked",
+        "PASS advanced_quantities signed_area=%.9f",
         quantities.signedArea);
 
     GeodesicPolygonAccumulator!double polygon;
@@ -86,9 +95,13 @@ int main()
         GeodesicPolygonAccumulator!double.tryFromGeodesic(
             solver, polygon);
 
-    writefln(
-        "STATUS polygon_prepare=%s",
-        polygonOk ? "pass" : "blocked");
+    if (!polygonOk || !polygon.isValid)
+    {
+        stderr.writefln("FAIL polygon prepare propagation");
+        return 8;
+    }
+
+    writefln("PASS polygon_prepare");
 
     GeodesicSegmentNearestResult!double nearest;
     const bool nearestOk =
@@ -123,20 +136,6 @@ int main()
         "STATUS intersection_prepare=%s",
         intersectionOk ? "pass" : "blocked");
 
-    if (quantitiesOk)
-    {
-        stderr.writefln(
-            "FAIL advanced quantities unexpectedly passed despite known area blocker");
-        return 7;
-    }
-
-    if (polygonOk)
-    {
-        stderr.writefln(
-            "FAIL polygon unexpectedly passed despite known authalic-area blocker");
-        return 8;
-    }
-
     if (intersectionOk)
     {
         stderr.writefln(
@@ -145,6 +144,6 @@ int main()
     }
 
     writefln(
-        "R69.4 PROPAGATION BASELINE PASS: line+nearest pass; quantities+polygon+intersection blocked as expected");
+        "R69.4 PROPAGATION PASS: line+quantities+polygon+nearest pass; intersection remains explicitly blocked");
     return 0;
 }
