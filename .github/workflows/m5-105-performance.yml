@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           repository: alex-1974/geodesy-d
-          ref: a6f9eaaae7de442dcefc5f523a7a9421656494d2
+          ref: 34ec621f56e6a13cb1a5c0dfe94d9ce5892b0390
           path: geodesy-d
           persist-credentials: false
       - uses: actions/checkout@v6
