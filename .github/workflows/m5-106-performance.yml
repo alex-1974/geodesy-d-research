@@ -40,8 +40,8 @@ jobs:
           cmake --install geographiclib-build
       - name: Build and smoke benchmark
         env:
-          GEODESY_D_REPO: \${{ github.workspace }}/geodesy-d
-          GEOGRAPHICLIB_ROOT: \${{ runner.temp }}/geographiclib-2.7
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEOGRAPHICLIB_ROOT: ${{ runner.temp }}/geographiclib-2.7
           DC: ldc2
           CXX: g++
           M5_106_CPU: 0
