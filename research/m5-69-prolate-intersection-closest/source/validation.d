@@ -105,9 +105,6 @@ int main()
             case GeodesicIntersectionCoincidence.distinct: dc = 0; break;
             case GeodesicIntersectionCoincidence.parallel: dc = 1; break;
             case GeodesicIntersectionCoincidence.antiparallel: dc = -1; break;
-            case GeodesicIntersectionCoincidence.invalid:
-                dc = 99;
-                break;
         }
 
         if (dx > 2e-4 || dy > 2e-4 || dc != oc)
