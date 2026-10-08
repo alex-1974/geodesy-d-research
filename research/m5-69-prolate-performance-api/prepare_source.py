@@ -147,28 +147,14 @@ if old_authalic not in text:
     raise SystemExit("intersection authalic marker missing")
 text = text.replace(old_authalic, new_authalic, 1)
 
-old_spacing = """    t1 = cast(W) PI * a * (cast(W) 1 - f);
-    delta = d * pow(W.epsilon, cast(W) 0.2);
-    if (f == cast(W) 0)
-    {
-        d1 = cast(W) PI * a / cast(W) 2;
-        return true;
-    }"""
-
+old_spacing = "    t1 = cast(W) PI * a * (cast(W) 1 - f);"
 new_spacing = """    const W meridionalHalf =
         cast(W) PI * a * (cast(W) 1 - f);
 
-    t1 = meridionalHalf;
-    delta = d * pow(W.epsilon, cast(W) 0.2);
-
-    if (f == cast(W) 0)
-    {
-        d1 = cast(W) PI * a / cast(W) 2;
-        return true;
-    }"""
+    t1 = meridionalHalf;"""
 
 if old_spacing not in text:
-    raise SystemExit("closest spacing preamble marker missing")
+    raise SystemExit("closest spacing assignment missing")
 text = text.replace(old_spacing, new_spacing, 1)
 
 old_return = """    return tryIntersectionConjugateFromOrigin!T(
