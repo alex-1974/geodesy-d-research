@@ -1,0 +1,27 @@
+name: M5 #69 prolate domain audit
+
+on:
+  pull_request:
+    paths:
+      - "research/m5-69-prolate-domain-audit/**"
+      - ".github/workflows/m5-69-prolate-domain-audit.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: develop
+          path: geodesy-d
+          persist-credentials: false
+      - name: Verify R69.1 domain inventory
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+        run: bash research/m5-69-prolate-domain-audit/run.sh
