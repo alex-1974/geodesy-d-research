@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from __future__ import annotations
+import os
 import statistics
 import subprocess
 import sys
@@ -8,7 +9,11 @@ def run(binary: str, mode: str, f: str, rounds: str, runs: int):
     values=[]
     checks=[]
     for _ in range(runs):
-        p=subprocess.run([binary,mode,f,rounds],check=True,text=True,capture_output=True)
+        command=[binary,mode,f,rounds]
+        cpu=os.environ.get("R69_5_CPU")
+        if cpu:
+            command=["taskset","-c",cpu,*command]
+        p=subprocess.run(command,check=True,text=True,capture_output=True)
         data=dict(line.split("=",1) for line in p.stdout.splitlines() if "=" in line)
         values.append(float(data["ns_per_op"]))
         checks.append(float(data["checksum"]))
