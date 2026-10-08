@@ -2,14 +2,14 @@
 set -euo pipefail
 export LC_ALL=C
 
-root="$(cd "$(dirname "\${BASH_SOURCE[0]}")/../.." && pwd)"
-geodesy_repo="\${GEODESY_D_REPO:?set GEODESY_D_REPO}"
-geographiclib_root="\${GEOGRAPHICLIB_ROOT:?set GEOGRAPHICLIB_ROOT}"
-dc="\${DC:-ldc2}"
-cxx="\${CXX:-g++}"
-cpu="\${M5_106_CPU:-2}"
-runs="\${M5_106_RUNS:-12}"
-rounds="\${M5_106_ROUNDS:-8}"
+root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+geodesy_repo="${GEODESY_D_REPO:?set GEODESY_D_REPO}"
+geographiclib_root="${GEOGRAPHICLIB_ROOT:?set GEOGRAPHICLIB_ROOT}"
+dc="${DC:-ldc2}"
+cxx="${CXX:-g++}"
+cpu="${M5_106_CPU:-2}"
+runs="${M5_106_RUNS:-12}"
+rounds="${M5_106_ROUNDS:-8}"
 
 tmp="$(mktemp -d)"
 trap 'rm -rf "$tmp"' EXIT
@@ -40,7 +40,7 @@ run_one() {
 
   for ((i=1;i<=runs;++i)); do
     output="$(
-      LD_LIBRARY_PATH="$geographiclib_root/lib:\${LD_LIBRARY_PATH:-}" \
+      LD_LIBRARY_PATH="$geographiclib_root/lib:${LD_LIBRARY_PATH:-}" \
       taskset -c "$cpu" "$binary" "$rounds"
     )"
 
