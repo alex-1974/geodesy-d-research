@@ -159,6 +159,34 @@ int main()
             caseChecksum);
     }
 
+    enum size_t prepareRounds = 32;
+    double prepareChecksum = 0.0;
+    const prepareStart = MonoTime.currTime;
+
+    foreach (_; 0 .. prepareRounds)
+    {
+        GeodesicIntersectionSolver!double prepared;
+
+        if (!GeodesicIntersectionSolver!double.tryFromGeodesic(
+                solver,
+                prepared))
+        {
+            stderr.writefln("ERROR: repeated intersection preparation failed");
+            return 6;
+        }
+
+        prepareChecksum += prepared.isValid ? 1.0 : 0.0;
+    }
+
+    const prepareElapsed = MonoTime.currTime - prepareStart;
+
+    const double prepareNsPerOp =
+        cast(double) prepareElapsed.total!"nsecs"
+            / cast(double) prepareRounds;
+
+    writefln("prepare_ns_per_op=%.6f", prepareNsPerOp);
+    writefln("prepare_checksum=%.12f", prepareChecksum);
+
     double coldChecksum = 0.0;
     const coldStart = MonoTime.currTime;
 
@@ -176,7 +204,7 @@ int main()
                 stderr.writefln(
                     "ERROR: cold tryNextGeodesicIntersection failed for case %s",
                     cases[i].name);
-                return 6;
+                return 7;
             }
 
             coldChecksum +=
@@ -235,10 +263,27 @@ int main()
 
     writefln("implementation=geodesy-d");
     writefln("operations=%s",operations);
-    writefln(
-        "ns_per_op=%.6f",
+    const double preparedNsPerOp =
         cast(double) elapsed.total!"nsecs"
-            / cast(double) operations);
+            / cast(double) operations;
+
+    const double coldNsPerOp =
+        cast(double) coldElapsed.total!"nsecs"
+            / cast(double) operations;
+
+    writefln("ns_per_op=%.6f", preparedNsPerOp);
     writefln("checksum=%.12f",checksum);
+
+    if (coldNsPerOp > preparedNsPerOp)
+    {
+        const double breakEvenCalls =
+            prepareNsPerOp / (coldNsPerOp - preparedNsPerOp);
+        writefln("break_even_calls=%.6f", breakEvenCalls);
+    }
+    else
+    {
+        writefln("break_even_calls=inf");
+    }
+
     return 0;
 }
