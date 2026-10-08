@@ -58,3 +58,41 @@ for old, new in replacements.items():
 geodesic.write_text(text)
 
 print("R69.4 prepared temporary signed-flattening source")
+
+
+area = out / "geodesy" / "internal" / "geodesic_area.d"
+text = area.read_text()
+
+if "    atanh,\n    sqrt;" not in text:
+    raise SystemExit("area import marker missing")
+text = text.replace(
+    "    atanh,\n    sqrt;",
+    "    atan,\n    atanh,\n    sqrt;",
+    1)
+
+old = """    const W e =
+        sqrt(e2);
+
+    return (
+        a * a
+        + b * b
+            * atanh(e)
+            / e
+    ) / cast(W) 2;"""
+
+new = """    const W factor =
+        e2 > cast(W) 0
+            ? atanh(sqrt(e2)) / sqrt(e2)
+            : atan(sqrt(-e2)) / sqrt(-e2);
+
+    return (
+        a * a
+        + b * b * factor
+    ) / cast(W) 2;"""
+
+if old not in text:
+    raise SystemExit("area formula marker missing")
+text = text.replace(old, new, 1)
+area.write_text(text)
+
+print("R69.4 added temporary prolate authalic-area branch")
