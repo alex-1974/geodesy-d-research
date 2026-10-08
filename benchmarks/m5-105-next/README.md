@@ -1,11 +1,17 @@
 # M5 #105 next-intersection performance
 
-Compares geodesy-d's prepared-line next-intersection public API with
-GeographicLib 2.7 Intersect::Next using preconstructed GeodesicLine values.
+Compares three costs explicitly:
 
-The GeographicLib Intersect object is also prepared once. This deliberately
-measures whether geodesy-d pays avoidable per-call ellipsoid-spacing setup
-costs.
+- geodesy-d one-shot `tryNextGeodesicIntersection` (cold invariant setup);
+- geodesy-d with one reusable `GeodesicIntersectionSolver`;
+- GeographicLib 2.7 `Intersect::Next` with one reusable `Intersect` object.
 
-Hosted CI is a smoke/build check only. Final qualification uses a CPU-pinned
-12-process XPS run.
+The harness also measures `GeodesicIntersectionSolver.tryFromGeodesic`
+preparation cost and reports an approximate break-even call count. This keeps
+the performance claim aligned with the workspace prepared-state quality gate.
+
+Both implementations receive preconstructed `GeodesicLine` values so line
+construction is outside the timed hot path.
+
+Hosted CI is a build/smoke measurement. Final qualification uses a CPU-pinned
+12-process XPS run with the same release flags.
