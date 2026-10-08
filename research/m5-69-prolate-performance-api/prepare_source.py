@@ -101,12 +101,14 @@ print("R69.5 added temporary prolate authalic-area branch")
 intersection = out / "geodesy" / "geodesic_intersection.d"
 text = intersection.read_text()
 
-if "    atan2,\n    ceil,\n    atanh," not in text:
-    raise SystemExit("intersection import marker missing")
-text = text.replace(
-    "    atan2,\n    ceil,\n    atanh,",
-    "    atan,\n    atan2,\n    ceil,\n    atanh,",
-    1)
+if "    atan,\n" not in text:
+    marker = "import std.math :\n"
+    if marker not in text:
+        raise SystemExit("intersection std.math import missing")
+    text = text.replace(
+        marker,
+        marker + "    atan,\n",
+        1)
 
 old_authalic = """    if (!(e2 > cast(W) 0)
         || !(e2 < cast(W) 1))
