@@ -35,9 +35,15 @@ run_one() {
     checksum="$(awk -F= '/^checksum=/ {print $2}' <<<"$output")"
     printf '%2d  %12.6f ns/op checksum=%s\n' "$i" "$value" "$checksum"
     if [[ "$i" -eq 1 ]]; then
-      awk '/^case_ns_per_op\./ {print}' <<<"$output"
+      awk '/^(case_ns_per_op\.|prepare_ns_per_op=|cold_ns_per_op=|break_even_calls=)/ {print}' <<<"$output"
     fi
     printf '%s\n' "$value" >> "$values"
+
+    if [[ "$label" == "geodesy-d" ]]; then
+      awk -F= '/^cold_ns_per_op=/ {print $2}' <<<"$output" >> "$tmp/geodesy-d.cold.values"
+      awk -F= '/^prepare_ns_per_op=/ {print $2}' <<<"$output" >> "$tmp/geodesy-d.prepare.values"
+      awk -F= '/^break_even_calls=/ {print $2}' <<<"$output" >> "$tmp/geodesy-d.break-even.values"
+    fi
   done
   median_file "$values"
 }
@@ -50,15 +56,25 @@ printf 'C++ compiler:     %s\n' "$("$cxx" --version | sed -n '1p')"
 printf 'CPU affinity:     logical CPU %s\n' "$cpu"
 printf 'process runs:     %s\n' "$runs"
 
+: > "$tmp/geodesy-d.cold.values"
+: > "$tmp/geodesy-d.prepare.values"
+: > "$tmp/geodesy-d.break-even.values"
+
 dmedian="$(run_one geodesy-d "$tmp/d-bench" | tee /dev/stderr | tail -n1)"
 cmedian="$(run_one GeographicLib "$tmp/cpp-bench" | tee /dev/stderr | tail -n1)"
+coldmedian="$(median_file "$tmp/geodesy-d.cold.values")"
+preparemedian="$(median_file "$tmp/geodesy-d.prepare.values")"
+breakevenmedian="$(median_file "$tmp/geodesy-d.break-even.values")"
 
 ratio="$(awk -v d="$dmedian" -v c="$cmedian" 'BEGIN{printf "%.6f",d/c}')"
 delta="$(awk -v d="$dmedian" -v c="$cmedian" 'BEGIN{printf "%.4f",(d/c-1)*100}')"
 
 echo
 echo "=== summary ==="
-printf 'geodesy_d_process_median_ns_per_op=%s\n' "$dmedian"
+printf 'geodesy_d_prepared_process_median_ns_per_op=%s\n' "$dmedian"
+printf 'geodesy_d_cold_process_median_ns_per_op=%s\n' "$coldmedian"
+printf 'geodesy_d_prepare_process_median_ns_per_op=%s\n' "$preparemedian"
+printf 'geodesy_d_break_even_calls_median=%s\n' "$breakevenmedian"
 printf 'geographiclib_process_median_ns_per_op=%s\n' "$cmedian"
 printf 'geodesy_over_geographiclib_ratio=%s\n' "$ratio"
 printf 'geodesy_delta_pct=%s\n' "$delta"
