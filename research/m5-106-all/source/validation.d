@@ -571,24 +571,99 @@ private bool compareCase(const Case item)
         return false;
     }
 
-    double maxError;
-    foreach (i, p; actual)
-    {
-        const double err = abs(p.x - xs[i]) + abs(p.y - ys[i]);
-        if (err > maxError)
-            maxError = err;
+    /*
+     * Symmetric/equidistant intersections are common. GeographicLib ranks on
+     * raw binary64 distance, then x/y only for an exact tie. The independent
+     * D solver can perturb mathematically tied ranks by a few ulps, so a
+     * positional comparison would misdiagnose a permutation as a wrong set.
+     *
+     * First prove complete set equality under a conditioning-scale tolerance.
+     * Then separately prove nondecreasing rank and deterministic x/y ordering
+     * inside numerically tied rank groups.
+     */
+    bool[capacity] matched;
+    double maxError = 0.0;
 
+    foreach (p; actual)
+    {
         const double tolerance =
             2e-4 > 128.0 * double.epsilon * (1.0 + l1(p, p0))
                 ? 2e-4
                 : 128.0 * double.epsilon * (1.0 + l1(p, p0));
 
-        if (err > tolerance || p.c != cs[i])
+        size_t bestIndex = size_t.max;
+        double bestError = double.infinity;
+
+        foreach (i; 0 .. expectedCount)
+        {
+            if (matched[i] || p.c != cs[i])
+                continue;
+
+            const double err =
+                abs(p.x - xs[i]) + abs(p.y - ys[i]);
+
+            if (err < bestError)
+            {
+                bestError = err;
+                bestIndex = i;
+            }
+        }
+
+        if (bestIndex == size_t.max || bestError > tolerance)
         {
             writefln(
-                "FAIL %-31s point=%s err=%.3e c=%s/%s",
-                item.name, i, err, p.c, cs[i]);
+                "FAIL %-31s unmatched err=%.3e c=%s",
+                item.name, bestError, p.c);
             return false;
+        }
+
+        matched[bestIndex] = true;
+        if (bestError > maxError)
+            maxError = bestError;
+    }
+
+    foreach (i; 0 .. expectedCount)
+    {
+        if (!matched[i])
+        {
+            writefln(
+                "FAIL %-31s oracle point %s unmatched",
+                item.name, i);
+            return false;
+        }
+    }
+
+    const double rankTieTolerance = 2e-4;
+
+    foreach (i; 1 .. actual.length)
+    {
+        const double previousRank = l1(actual[i - 1], p0);
+        const double currentRank = l1(actual[i], p0);
+
+        if (currentRank + rankTieTolerance < previousRank)
+        {
+            writefln(
+                "FAIL %-31s rank order %s: %.17g < %.17g",
+                item.name, i, currentRank, previousRank);
+            return false;
+        }
+
+        if (abs(currentRank - previousRank) <= rankTieTolerance)
+        {
+            const bool xyOrdered =
+                actual[i - 1].x < actual[i].x
+                || (
+                    actual[i - 1].x == actual[i].x
+                    && actual[i - 1].y <= actual[i].y
+                );
+
+            if (!xyOrdered)
+            {
+                writefln(
+                    "FAIL %-31s tie order %s",
+                    item.name, i);
+                return false;
+            }
         }
     }
 
