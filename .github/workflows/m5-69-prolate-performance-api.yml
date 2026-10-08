@@ -1,0 +1,49 @@
+name: M5 #69 prolate performance/API
+
+on:
+  pull_request:
+    paths:
+      - "research/m5-69-prolate-performance-api/**"
+      - ".github/workflows/m5-69-prolate-performance-api.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark-smoke:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: develop
+          path: geodesy-d
+          persist-credentials: false
+      - uses: actions/checkout@v6
+        with:
+          repository: geographiclib/geographiclib
+          ref: v2.7
+          path: geographiclib
+          persist-credentials: false
+      - uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ldc-1.41.0
+      - name: Build GeographicLib 2.7
+        run: |
+          cmake -S geographiclib -B geographiclib-build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/geographiclib-2.7" \
+            -DBUILD_SHARED_LIBS=ON
+          cmake --build geographiclib-build --parallel 2
+          cmake --install geographiclib-build
+      - name: Run hosted performance smoke
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEOGRAPHICLIB_ROOT: ${{ runner.temp }}/geographiclib-2.7
+          DC: ldc2
+          CXX: g++
+          R69_5_RUNS: 3
+          R69_5_ROUNDS: 1000
+        run: bash research/m5-69-prolate-performance-api/run.sh
