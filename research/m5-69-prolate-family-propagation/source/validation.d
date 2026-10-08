@@ -101,7 +101,7 @@ int main()
 
     if (!nearestOk
         || !nearest.isValid
-        || !isFinite(nearest.distance))
+        || !isFinite(nearest.nearestDistance))
     {
         stderr.writefln("FAIL nearest propagation");
         return 6;
@@ -109,7 +109,7 @@ int main()
 
     writefln(
         "PASS nearest distance=%.9f along=%.9f cross=%.9f",
-        nearest.distance,
+        nearest.nearestDistance,
         nearest.alongTrack,
         nearest.signedCrossTrack);
 
