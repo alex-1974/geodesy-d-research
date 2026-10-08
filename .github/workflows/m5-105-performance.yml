@@ -1,0 +1,46 @@
+name: M5 #105 next performance build
+
+on:
+  pull_request:
+    paths:
+      - "benchmarks/m5-105-next/**"
+      - ".github/workflows/m5-105-performance.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/checkout@v6
+        with:
+          repository: alex-1974/geodesy-d
+          ref: 413abcf2ef71454511776c168b12d09d6c2b462c
+          path: geodesy-d
+          persist-credentials: false
+      - uses: actions/checkout@v6
+        with:
+          repository: geographiclib/geographiclib
+          ref: v2.7
+          path: geographiclib
+          persist-credentials: false
+      - uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: ldc-1.41.0
+      - name: Build GeographicLib
+        run: |
+          cmake -S geographiclib -B geographiclib-build             -DCMAKE_BUILD_TYPE=Release             -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/geographiclib-2.7"             -DBUILD_SHARED_LIBS=ON
+          cmake --build geographiclib-build --parallel 2
+          cmake --install geographiclib-build
+      - name: Build and smoke benchmark
+        env:
+          GEODESY_D_REPO: ${{ github.workspace }}/geodesy-d
+          GEOGRAPHICLIB_ROOT: ${{ runner.temp }}/geographiclib-2.7
+          DC: ldc2
+          CXX: g++
+          M5_105_CPU: 0
+          M5_105_RUNS: 1
+        run: bash benchmarks/m5-105-next/run.sh
