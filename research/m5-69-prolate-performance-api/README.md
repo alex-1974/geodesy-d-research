@@ -46,3 +46,46 @@ Interpretation:
   measurement before admission.
 
 Hosted CI remains smoke evidence only.
+
+
+## XPS qualification — 2026-10-08
+
+Pinned host evidence:
+
+- host: xps-15
+- CPU: Intel Core i7-9750H
+- affinity: CPU 2
+- 12 independent process runs
+- 50,000 operations per process/case
+- research commit: `9b11539c3d5f6a13040db1eda7882f0c3eb8c814`
+- production commit: `7f31cc90cd8ab7ba673d16aa2219ef4c7b540a96`
+- LDC 1.41.0
+- g++ 15.2.0
+- GeographicLib from `/usr`
+
+| Operation | baseline WGS84 | candidate WGS84 | WGS84 delta | candidate f=-0.01 | GeographicLib f=-0.01 | D/GL ratio |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Direct | 334.632 ns | 332.683 ns | -0.582% | 319.251 ns | 361.932220 ns | 0.882074 |
+| Inverse | 930.878 ns | 926.006 ns | -0.523% | 916.697 ns | 1106.916640 ns | 0.828154 |
+| Intersection preparation | 21,181.850 ns | 21,325.150 ns | +0.677% | 19,967.750 ns | 8,870.374570 ns | 2.251061 |
+
+Interpretation:
+
+- Direct and Inverse show no WGS84 regression; the candidate is slightly
+  faster in this pinned qualification.
+- Intersection preparation changes by +0.677% on WGS84, small enough to treat
+  as performance-neutral for admission.
+- Prolate Direct is about 11.79% faster than GeographicLib 2.7.
+- Prolate Inverse is about 17.18% faster than GeographicLib 2.7.
+- Prolate intersection preparation is about 2.25x slower than GeographicLib
+  2.7. This is a real optimization opportunity, but it is preparation cost,
+  not the per-query intersection kernel, and the existing prepared API
+  amortizes it across repeated operations.
+
+### R69.5 performance conclusion
+
+The prolate candidate does not introduce a material regression in the existing
+WGS84 path. Direct/Inverse performance is competitive or better than
+GeographicLib in the qualified prolate interval. Intersection preparation is
+the only material relative weakness and should be tracked as a follow-up
+optimization rather than block the narrow-domain admission.
