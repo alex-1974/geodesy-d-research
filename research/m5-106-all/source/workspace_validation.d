@@ -212,7 +212,7 @@ private bool basic(
 
         double dx;
         double dy;
-        int coincidence;
+        int coincidence = 0;
 
         if (z <= eps * rR)
         {
@@ -624,7 +624,7 @@ private EnumerationStatus enumerateAllWorkspace(
 
             foreach (sign; [-1.0, 1.0])
             {
-                double sa;
+                double sa = 0.0;
                 P qc;
 
                 do
