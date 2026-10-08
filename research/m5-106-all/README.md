@@ -58,3 +58,28 @@ GEOGRAPHICLIB_ROOT=/path/to/geographiclib-2.7 \
 
 R106.2 will use this corpus to qualify D-native tiling, duplicate handling,
 ordering, and coincident conjugate enumeration.
+
+
+## R106.3 — caller-owned workspace prototype
+
+R106.3 keeps the R106.2 mathematics unchanged and replaces its temporary
+dynamic arrays with caller-owned slices.
+
+The core prototype is explicitly:
+
+- `pure nothrow @safe @nogc`;
+- exact about `total` when workspace is sufficient;
+- successful with undersized output via `written/total/truncated`;
+- successful for zero-capacity output as a count query;
+- explicit about insufficient scratch storage through
+  `EnumerationStatus.workspaceTooSmall`;
+- allocation-free in tiling, duplicate tracking, coincident conjugate
+  enumeration, sorting, and output copying.
+
+Output capacity and workspace capacity are intentionally different contracts:
+short output is normal truncation; short workspace cannot promise an exact
+total and is therefore reported separately.
+
+The research workspace currently exposes typed slices for tile starts, skip
+flags, unique intersections, and coincident-line centers. Production naming
+and packaging remain for extraction after qualification.
