@@ -81,7 +81,7 @@ command -v g++ >/dev/null || { echo "error: g++ not found" >&2; exit 6; }
   printf 'gxx=%s\n' "$(g++ --version | sed -n '1p')"
   echo
 
-  GEODESY_D_REPO="$geodesy_repo"   GEOGRAPHICLIB_ROOT="$geographiclib_root"   DC=ldc2   CXX=g++   R69_5_CPU="$cpu"   R69_5_RUNS="$runs"   R69_5_ROUNDS="$rounds"     bash "$root/research/m5-69-prolate-performance-api/run.sh"
+  GEODESY_D_REPO="$geodesy_worktree"   GEOGRAPHICLIB_ROOT="$geographiclib_root"   DC=ldc2   CXX=g++   R69_5_CPU="$cpu"   R69_5_RUNS="$runs"   R69_5_ROUNDS="$rounds"     bash "$root/research/m5-69-prolate-performance-api/run.sh"
 } | tee "$out"
 
 echo
