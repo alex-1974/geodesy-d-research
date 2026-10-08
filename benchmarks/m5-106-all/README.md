@@ -110,3 +110,48 @@ final R106.5 claim requires the documented 12-process CPU-pinned XPS run.
 The XPS wrapper records host, kernel, CPU model, compiler versions, research
 and production commit IDs, affinity, run count, and the complete benchmark
 output under `benchmarks/m5-106-all/evidence/`.
+
+
+## XPS final qualification
+
+Final CPU-pinned qualification was run on xps-15 with:
+
+- Intel Core i7-9750H;
+- Linux 6.17.0-22-generic;
+- logical CPU 2;
+- 12 independent process runs;
+- 8 timed rounds per case;
+- LDC 1.41.0;
+- g++ 15.2.0;
+- GeographicLib from /usr;
+- production geodesy-d commit
+  `7f31cc90cd8ab7ba673d16aa2219ef4c7b540a96`;
+- research commit
+  `901eee5aa760792e41409d3ec838818b44f18fee`.
+
+Process-median results:
+
+- geodesy-d exact: **85,609.375 ns/query**
+- GeographicLib 2.7: **94,990.125 ns/query**
+- ratio: **0.901245**
+- geodesy-d delta: **-9.8755%**
+- geodesy-d exact: **4,201.687 ns/result**
+- GeographicLib: **4,662.092 ns/result**
+- geodesy-d exact: **2,853.646 ns/tile**
+- geodesy-d count-only: **79,700.000 ns/query**
+- geodesy-d truncated output: **79,257.813 ns/query**
+
+All 12 geodesy-d runs produced the same checksum
+`-0.004403418219`; all 12 GeographicLib runs produced
+`-0.008247239930`.
+
+The benchmark confirms stable search-radius scaling:
+
+- required tiles: 5, 9, 25, 81 for 20, 40, 80, 160 Mm;
+- ordinary results: 1, 4, 16, 64;
+- near-parallel results: 1, 4, 16, 56;
+- symmetric/coincident results: 1, 3, 15, 63.
+
+On the qualified XPS configuration, prepared geodesy-d All enumeration is
+about **9.9% faster** than GeographicLib 2.7 on the aggregate matrix while
+remaining allocation-free in the core path.
