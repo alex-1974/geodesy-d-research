@@ -40,7 +40,7 @@ def main() -> None:
             continue
 
         if fields[0] == "CASE":
-            if len(fields) != 10:
+            if len(fields) != 9:
                 fail(f"malformed CASE line: {line}")
             name = fields[1]
             if name in cases:
